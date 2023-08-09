@@ -1,4 +1,4 @@
-<img width="1037" alt="TreadLabs_logo_light@2x" src="https://github.com/tread-labs-public/taas-api-client/assets/122761617/fd19a812-64a1-4907-ab8c-8c28095af917">
+<img width="1037" alt="TreadLabs_logo_light@2x" src="https://uploads-ssl.webflow.com/631952c105a64138b98a5339/64af023765b5d70df562e05f_TreadLabs_logo_light.svg">
 
 # TaaS Python Client
 
