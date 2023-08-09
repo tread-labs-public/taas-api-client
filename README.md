@@ -32,17 +32,12 @@ res = c.place_order(req)
 | id                  | Unique identifier for the order: .                         |
 | parent_order        | Indicates whether the order has a parent order; currently, only multi-orders will have a parent order ID.  |
 | created_at          | Timestamp of when the order was created:                          |
-| buy_token           | Token being bought.                                                                       |
-| sell_token          | Token being sold.                                                                        |
-| pair                | Trading pair in Tread Labs convention (<base>:<asset_type>-<quote>.    |
-| side                | The side of the order.                                                                    |
+| pair                | Trading pair in Tread Labs convention (base:type-quote).    |
 | sell_token_amount   | Amount of the sell token.                                         |
 | buy_token_amount    | Amount of the buy token (if specified instead of the sell_token_amount).                                         |
 | strategy            | Identifier for the trading strategy used in the order.                                          |
 | strategy_params     | Parameters for custom values in the strategy (reduce-only, post-only, etc).              |
-| limit_price         | Limit price for the order.                                                                      |
-| time_start          | Start timestamp for the order.                                                                  |
-| time_end            | End timestamp for the order.                                                                    |
+| limit_price         | Limit price for the entire order.                                                               |
 | duration            | Duration of the order in seconds.                                                               |
 | accounts            | List of account identifiers associated with the order.                                          |
 | account_names       | List of account names related to the order.                                                     |
@@ -54,10 +49,7 @@ res = c.place_order(req)
 | executed_notional   | Notional value of the executed quantity.                                                        |
 | active              | Indicates if the order is active.                                                               |
 | status              | Current status of the order.                                                                    |
-| engine_passiveness  | Engine passiveness parameter of the order.                                                      |
-| schedule_discretion | Schedule discretion parameter of the order.                                                     |
 | failure_reason      | Reason for order failure, if applicable.                                                        |
-| stop_price          | Stop price for the order, if applicable.                                                                       |
 | notes               | Additional notes for the order.                                                                 |
 | custom_order_id     | Custom order identifier, if present.                                                            |
 | updated_leverage    | Updated leverage for the order, if applicable. _This value will persist on the exchange._        |
