@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "taas-api-client"
+version = "1.0.0"
+authors = [
+  { name="Tread Labs", email="ops@tread.fi" },
+]
+description = "API client to interact with the TAAS web API"
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/tread-labs-public/taas-api-client"
+"Bug Tracker" = "https://github.com/tread-labs-public/taas-api-client/issues"
