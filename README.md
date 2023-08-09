@@ -1,4 +1,6 @@
-# TaaS API Client
+<img width="1037" alt="TreadLabs_logo_light@2x" src="https://github.com/tread-labs-public/taas-api-client/assets/122761617/fd19a812-64a1-4907-ab8c-8c28095af917">
+
+# TaaS Python Client
 
 ## Overview
 These APIs provide a comprehensive interface to interact with a trading platform, allowing users to manage orders, view account balances, and execute various trading strategies. The endpoints are designed to facilitate the creation, retrieval, and deletion of orders, as well as the querying of account balances.
