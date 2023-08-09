@@ -81,7 +81,7 @@ c.cancel_order("045158ea-a252-4306-8847-1b27f8157143")
 ```
 
 ### Getting Account Balances
-[For details on response structure](https://app.gitbook.com/o/C8XGL8z2Uu1hY4jrLgyP/s/N4wz3ULyGM1MIPJxCbK1/interacting-with-the-api/api-reference/accounts)
+[For details on response structure](https://tread-labs.gitbook.io/api-docs/interacting-with-the-api/api-reference/accounts)
 
 #### Example
 
