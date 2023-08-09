@@ -10,6 +10,9 @@ pip install git+ssh://git@github.com:tread-labs-public/taas-api-client.git
 ```
 
 ## Client Setup
+
+Make sure the URL specified is the full path to the TaaS instance (including "https://"). To get your auth_token for the client's user, [refer to the TaaS documentation](https://tread-labs.gitbook.io/api-docs/interacting-with-the-api/get-your-api-token).
+
 ```
 from taas_api import Client, PlaceOrderRequest
 
