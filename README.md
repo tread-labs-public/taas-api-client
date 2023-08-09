@@ -20,7 +20,7 @@ c = Client(url="http://localhost:8000", auth_token="b72ab3bcbce4423208a07f52b5ae
 
 Submits a new order with specified parameters such as accounts, trading pair, side (buy/sell), sell token amount, duration, strategy, and engine passiveness. The place order endpoint has many fields with many restrictions. To simplify the call and run validations against the parameters, we provide a data object: `PlaceOrderRequest`. Every field can be interacted with like a regular attribute in Python.
 
-[For more details on the order APIs]([https://tread-labs.gitbook.io/api-docs/interacting-with-the-api/api-reference/orders)
+[For more details on the order APIs](https://tread-labs.gitbook.io/api-docs/interacting-with-the-api/api-reference/orders)
 
 #### Example
 
