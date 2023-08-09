@@ -3,21 +3,21 @@
 ## Overview
 These APIs provide a comprehensive interface to interact with a trading platform, allowing users to manage orders, view account balances, and execute various trading strategies. The endpoints are designed to facilitate the creation, retrieval, and deletion of orders, as well as the querying of account balances.
 
-## Install
+## Installation
 Install as python dependency through private git repo:
 ```
 pip install git+ssh://git@github.com:tread-labs-public/taas-api-client.git
 ```
 
-## Sample Code
-### Client Setup
+## Client Setup
 ```
 from taas_api import Client, PlaceOrderRequest
 
 c = Client(url="http://localhost:8000", auth_token="b72ab3bcbce4423208a07f52b5aed207d5bd053e")
 ```
 
-### Place Order (_POST_): ORDERS_URL
+### Placing Orders
+
 Submits a new order with specified parameters such as accounts, trading pair, side (buy/sell), sell token amount, duration, strategy, and engine passiveness. The place order endpoint has many fields with many restrictions. To simplify the call and run validations against the parameters, we provide a data object: `PlaceOrderRequest`. Every field can be interacted with like a regular attribute in Python.
 
 (For more details on the order APIs [https://tread-labs.gitbook.io/api-docs/interacting-with-the-api/api-reference/orders
@@ -67,21 +67,21 @@ print(res)
     'updated_leverage': None
 }
 ```
-### Get Order
+### Get Order Details
 Retrieves the details of a specific order using the order ID.
 
 ```
 c.get_order("045158ea-a252-4306-8847-1b27f8157143")
 ```
 
-### Cancel Order
+### Cancelling Active Orders
 Cancels a specific order using the order ID.
 
 ```
 c.cancel_order("045158ea-a252-4306-8847-1b27f8157143")
 ```
 
-### Get Balances
+### Getting Account Balances
 For details on response structure, refer to:
 
 https://app.gitbook.com/o/C8XGL8z2Uu1hY4jrLgyP/s/N4wz3ULyGM1MIPJxCbK1/interacting-with-the-api/api-reference/accounts
