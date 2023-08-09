@@ -23,6 +23,27 @@ c = Client(url="http://localhost:8000", auth_token="b72ab3bcbce4423208a07f52b5ae
 
 Submits a new order with specified parameters such as accounts, trading pair, side (buy/sell), sell token amount, duration, strategy, and engine passiveness. The place order endpoint has many fields with many restrictions. To simplify the call and run validations against the parameters, we provide a data object: `PlaceOrderRequest`. Every field can be interacted with like a regular attribute in Python.
 
+| Field               | Description                                                                                       |
+|---------------------|---------------------------------------------------------------------------------------------------|
+| accounts            | A list of account names to be available for the order.                                      |
+| pair                | The trading pair for the order, following the syntax 'BASE-QUOTE' or 'BASE:VARIANT-QUOTE'.    |
+| side                | The side of the order, indicating whether it's a buy or sell ('buy' or 'sell').                |
+| duration            | The duration of the order in seconds.                                                          |
+| strategy            | The chosen trading strategy for the order (e.g. TWAP, VWAP, etc)                                |
+| sell_token_amount   | The amount of the sell token to be used in the order, if applicable.                            |
+| base_asset_qty      | The quantity of the base asset (token being bought) in the order, if applicable.                |
+| quote_asset_qty     | The quantity of the quote asset (token being sold) in the order, if applicable.                 |
+| engine_passiveness  | The engine passiveness parameter of the order, within the range [0, 0.1], 0.02 is default.         |
+| schedule_discretion | The schedule discretion parameter of the order, within the range [0, 0.1], 0.1 is default.        |
+| limit_price         | The limit price that limits all the placements in the order, if applicable.                     |
+| strategy_params     | Additional parameters specific to the chosen trading strategy, provided as a dictionary.        |
+| notes               | Any additional notes or comments related to the order.                                          |
+| custom_order_id     | A custom identifier for the order, if provided.                                                |
+| updated_leverage    | An updated leverage value for the order, if applicable. This will persist on the exchange for the pair.   |
+
+Please note that the provided validation heuristics are designed to ensure that the inputs meet certain criteria before proceeding with order placement.
+[For more details on the order APIs](https://tread-labs.gitbook.io/api-docs/interacting-with-the-api/api-reference/orders)
+
 #### Example
 
 ```
@@ -30,36 +51,8 @@ req = PlaceOrderRequest(accounts=["mock"], pair="ETH-USDT", side="buy", duration
 res = c.place_order(req)
 ```
 
-| Field               | Description                                                                                      |
-|---------------------|--------------------------------------------------------------------------------------------------|
-| id                  | Unique identifier for the order: .                         |
-| parent_order        | Indicates whether the order has a parent order; currently, only multi-orders will have a parent order ID.  |
-| created_at          | Timestamp of when the order was created:                          |
-| pair                | Trading pair in Tread Labs convention (base:type-quote).    |
-| sell_token_amount   | Amount of the sell token.                                         |
-| buy_token_amount    | Amount of the buy token (if specified instead of the sell_token_amount).                                         |
-| strategy            | Identifier for the trading strategy used in the order.                                          |
-| strategy_params     | Parameters for custom values in the strategy (reduce-only, post-only, etc).              |
-| limit_price         | Limit price for the entire order.                                                               |
-| duration            | Duration of the order in seconds.                                                               |
-| accounts            | List of account identifiers associated with the order.                                          |
-| account_names       | List of account names related to the order.                                                     |
-| user                | User identifier associated with the order.                                                      |
-| time_zone           | Timezone for the timestamps in the order.                                                       |
-| placements          | List of placement information for the order.                                                    |
-| executed_qty        | Quantity of the order executed in sell token's quantity.                                        |
-| executed_price      | Price at which the executed quantity was transacted.                                            |
-| executed_notional   | Notional value of the executed quantity.                                                        |
-| active              | Indicates if the order is active.                                                               |
-| status              | Current status of the order.                                                                    |
-| failure_reason      | Reason for order failure, if applicable.                                                        |
-| notes               | Additional notes for the order.                                                                 |
-| custom_order_id     | Custom order identifier, if present.                                                            |
-| updated_leverage    | Updated leverage for the order, if applicable. _This value will persist on the exchange._        |
-
-[For more details on the order APIs](https://tread-labs.gitbook.io/api-docs/interacting-with-the-api/api-reference/orders)
-
 #### Response
+
 ```
 {
     'id': 'd3ca321a-d25c-4cee-8a0f-3f74d239c90d',
@@ -121,7 +114,7 @@ res = c.get_balances()
 print(res)
 ```
 
-The response is a dictionary where the keys represent the account names and the values provide detailed information about the assets held in those accounts.
+The returned value is a dictionary where the keys represent the account names and the values provide detailed information about the assets held in those accounts.
 
 For the given example, the account name is 'test' and the details are as follows:
 
@@ -141,7 +134,7 @@ For the given example, the account name is 'test' and the details are as follows
 | leverage                      | The amount of leverage applied to the position. If None, it means no leverage is applied. |
 | notional_pct_total     | The percentage of the notional value of the asset or position relative to the total notional value of all assets and positions in the account. |
 
-[For details on response structure](https://tread-labs.gitbook.io/api-docs/interacting-with-the-api/api-reference/accounts)
+[For details on account structure](https://tread-labs.gitbook.io/api-docs/interacting-with-the-api/api-reference/accounts)
 
 ```
 {
@@ -191,6 +184,3 @@ For the given example, the account name is 'test' and the details are as follows
     }
 }
 ```
-
-
-
