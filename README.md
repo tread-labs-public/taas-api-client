@@ -1,6 +1,7 @@
-# TAAS API Client
+# TaaS API Client
 
-Simple API client to interact with the TAAS API
+## Overview
+These APIs provide a comprehensive interface to interact with a trading platform, allowing users to manage orders, view account balances, and execute various trading strategies. The endpoints are designed to facilitate the creation, retrieval, and deletion of orders, as well as the querying of account balances.
 
 ## Install
 Install as python dependency through private git repo:
@@ -16,20 +17,17 @@ from taas_api import Client, PlaceOrderRequest
 c = Client(url="http://localhost:8000", auth_token="b72ab3bcbce4423208a07f52b5aed207d5bd053e")
 ```
 
-### Place Order
-The place order endpoint has many fields with many restrictions.
-To simplify the call and run validations against the parameters, we provide a data object: `PlaceOrderRequest`. Every field can be interacted with like a regular attribute in python.
+### Place Order (_POST_): ORDERS_URL
+Submits a new order with specified parameters such as accounts, trading pair, side (buy/sell), sell token amount, duration, strategy, and engine passiveness. The place order endpoint has many fields with many restrictions. To simplify the call and run validations against the parameters, we provide a data object: `PlaceOrderRequest`. Every field can be interacted with like a regular attribute in Python.
 
-For more details on the order APIs:
-https://tread-labs.gitbook.io/api-docs/interacting-with-the-api/api-reference/orders
+(For more details on the order APIs [https://tread-labs.gitbook.io/api-docs/interacting-with-the-api/api-reference/orders
+])
 
 #### Example
 
 ```
 req = PlaceOrderRequest(accounts=["mock"], pair="ETH-USDT", side="buy", duration=300, base_asset_qty=5, strategy="TWAP")
-
 res = c.place_order(req)
-
 print(res)
 ```
 
@@ -70,11 +68,15 @@ print(res)
 }
 ```
 ### Get Order
+Retrieves the details of a specific order using the order ID.
+
 ```
 c.get_order("045158ea-a252-4306-8847-1b27f8157143")
 ```
 
 ### Cancel Order
+Cancels a specific order using the order ID.
+
 ```
 c.cancel_order("045158ea-a252-4306-8847-1b27f8157143")
 ```
@@ -140,3 +142,5 @@ print(res)
     }
 }
 ```
+
+
