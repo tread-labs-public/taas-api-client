@@ -13,7 +13,7 @@ pip install -r requirements.txt
 ```
 If you want to use this within another project, install as Python dependency through private git repo:
 ```
-pip install git+ssh://git@github.com:tread-labs-public/taas-api-client.git
+pip install git+ssh://git@github.com/tread-labs-public/taas-api-client.git
 ```
 
 ## Client Setup
