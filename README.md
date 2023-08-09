@@ -9,6 +9,7 @@ These APIs provide a comprehensive interface to interact with a trading platform
 Clone the project via git:
 ```
 git clone git@github.com:tread-labs-public/taas-api-client.git
+pip install -r requirements.txt
 ```
 If you want to use this within another project, install as Python dependency through private git repo:
 ```
