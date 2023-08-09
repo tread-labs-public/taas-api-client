@@ -6,7 +6,12 @@
 These APIs provide a comprehensive interface to interact with a trading platform, allowing users to manage orders, view account balances, and execute various trading strategies. The endpoints are designed to facilitate the creation, retrieval, and deletion of orders, as well as the querying of account balances.
 
 ## Installation
-Install as python dependency through private git repo:
+Clone the project via git:
+```
+git clone git@github.com:tread-labs-public/taas-api-client.git
+pip install -r requirements.txt
+```
+If you want to use this within another project, install as Python dependency through private git repo:
 ```
 pip install git+ssh://git@github.com:tread-labs-public/taas-api-client.git
 ```
