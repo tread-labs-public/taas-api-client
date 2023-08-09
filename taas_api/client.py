@@ -57,6 +57,9 @@ class Client(BaseClient):
     def get_balances(self):
         return self.get(path=f"/api/balances/")
 
+    def get_orders(self):
+        return self.get(path=f"/api/orders/")
+
     def place_order(self, request: PlaceOrderRequest):
         if not isinstance(request, PlaceOrderRequest):
             raise ValueError(f"Expecting request to be of type {PlaceOrderRequest}")
