@@ -123,7 +123,10 @@ res = c.place_multi_order(request)
     'updated_at':'2023-08-15T08:36:15.366061Z',
     'time_start':'2023-08-15T08:36:15.357630Z',
     'duration':200,
-    'venues':[], # deprecated
+    'child_order_ids':[
+        'be508fb9-ee63-4a90-93eb-58dbdaf03378',
+        '9d732e1f-e935-487b-93ac-b58e2b2896e4'
+    ],
     'strategy':'6fe4ba3e-c578-45bd-824c-c523bf3c56de',
     'strategy_params':{},
     'engine_passiveness':'0.02000000000000000000',
@@ -230,3 +233,6 @@ For the given example, the account name is 'test' and the details are as follows
     }
 }
 ```
+
+## Dev Notes
+Follow https://packaging.python.org/en/latest/tutorials/packaging-projects/ for steps to release. Do not specify --repository option for real release. Uses token authentication.
