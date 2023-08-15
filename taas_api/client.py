@@ -2,7 +2,7 @@ import requests
 import logging
 from urllib.parse import urljoin
 
-from taas_api.data import PlaceOrderRequest
+from taas_api import data
 
 logger = logging.getLogger(__name__)
 
@@ -60,9 +60,20 @@ class Client(BaseClient):
     def get_orders(self):
         return self.get(path=f"/api/orders/")
 
-    def place_order(self, request: PlaceOrderRequest):
-        if not isinstance(request, PlaceOrderRequest):
-            raise ValueError(f"Expecting request to be of type {PlaceOrderRequest}")
+    def place_multi_order(self, request: data.PlaceMultiOrderRequest):
+        if not isinstance(request, data.PlaceMultiOrderRequest):
+            raise ValueError(f"Expecting request to be of type {data.PlaceMultiOrderRequest}")
+
+        validate_success, errors = request.validate()
+
+        if not validate_success:
+            raise ValueError(str(errors))
+
+        return self.post(path=f"/api/multi_orders/", data=request.to_post_body())
+
+    def place_order(self, request: data.PlaceOrderRequest):
+        if not isinstance(request, data.PlaceOrderRequest):
+            raise ValueError(f"Expecting request to be of type {data.PlaceOrderRequest}")
 
         validate_success, error = request.validate()
 

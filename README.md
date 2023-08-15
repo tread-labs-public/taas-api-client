@@ -90,6 +90,51 @@ res = c.place_order(req)
 }
 ```
 
+### Place Multi Order
+
+```
+request = data.PlaceMultiOrderRequest(
+    accounts=["mock"],
+    duration=200,
+    strategy="TWAP",
+    child_orders=[
+        data.ChildOrder(
+            pair="ETH:PERP-USDT",
+            side="sell",
+            base_asset_qty="10"
+        ,
+        data.ChildOrder(
+            pair="ETH-USDT",
+            side="buy",
+            base_asset_qty="10"
+        ),
+    ]
+)
+
+res = c.place_multi_order(request)
+```
+
+#### Response
+
+```
+{
+    'id':'626c4202-a046-401a-bf23-f3805f593c21',
+    'created_at':'2023-08-15T08:36:15.366052Z',
+    'updated_at':'2023-08-15T08:36:15.366061Z',
+    'time_start':'2023-08-15T08:36:15.357630Z',
+    'duration':200,
+    'venues':[], # deprecated
+    'strategy':'6fe4ba3e-c578-45bd-824c-c523bf3c56de',
+    'strategy_params':{},
+    'engine_passiveness':'0.02000000000000000000',
+    'schedule_discretion':'0.08000000000000000000',
+    'user':'2',
+    'status':'SUBMITTED',
+    'time_zone':'UTC',
+    'failure_reason':''
+}
+```
+
 ### Get Order Details
 Retrieves the details of a specific order using the order ID.
 
