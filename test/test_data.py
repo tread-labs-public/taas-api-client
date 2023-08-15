@@ -135,3 +135,209 @@ class PlaceOrderRequestTest(TestCase):
         self.assertEqual("wow!!!", post_body["notes"])
         self.assertEqual("abcd-efgh", post_body["custom_order_id"])
         self.assertEqual(10, post_body["updated_leverage"])
+
+class PlaceMultiOrderRequestTest(TestCase):
+    def _build_multi_order_request(self, **kwargs):
+        params = {
+            "accounts": ["mock"],
+            "duration": 300,
+            "strategy": "TWAP",
+        }
+
+        params.update(**kwargs)
+        return data.PlaceMultiOrderRequest(**params)
+
+    def test_validate_success(self):
+        child_orders = [
+            data.ChildOrder(
+                pair="ETH:PERP-USDT",
+                side="sell",
+                base_asset_qty="10",
+            ),
+            data.ChildOrder(
+                pair="ETH-USDT",
+                side="buy",
+                base_asset_qty="10",
+            ),
+        ]
+
+        multi_order = self._build_multi_order_request(child_orders=child_orders)
+        success, errors = multi_order.validate()
+
+        self.assertEqual(True, success)
+        self.assertEqual([], errors)
+
+    def test_validate_success_all_fields(self):
+        child_orders = [
+            data.ChildOrder(
+                pair="ETH:PERP-USDT",
+                side="sell",
+                base_asset_qty="10",
+            ),
+            data.ChildOrder(
+                pair="ETH-USDT",
+                side="buy",
+                base_asset_qty="10",
+            ),
+        ]
+
+        multi_order = self._build_multi_order_request(
+            strategy_params={"passive_only": True},
+            engine_passiveness=0.1,
+            schedule_discretion=0.1,
+            child_orders=child_orders
+        )
+        success, errors = multi_order.validate()
+
+        self.assertEqual(True, success)
+        self.assertEqual([], errors)
+
+    def test_validate_fail_no_orders(self):
+        multi_order = self._build_multi_order_request(child_orders=[])
+
+        success, errors = multi_order.validate()
+
+        self.assertEqual(False, success)
+        self.assertTrue("No child orders" in errors[0])
+
+    def test_validate_fail_bad_strategy(self):
+        child_orders = [
+            data.ChildOrder(
+                pair="ETH:PERP-USDT",
+                side="sell",
+                base_asset_qty="10",
+            ),
+        ]
+        multi_order = self._build_multi_order_request(strategy="ABCD", child_orders=child_orders)
+
+        success, errors = multi_order.validate()
+        self.assertEqual(False, success)
+        self.assertTrue("strategy" in errors[0])
+
+    def test_validate_fail_bad_engine_passiveness(self):
+        child_orders = [
+            data.ChildOrder(
+                pair="ETH:PERP-USDT",
+                side="sell",
+                base_asset_qty="10",
+            ),
+        ]
+        multi_order = self._build_multi_order_request(engine_passiveness=-1, child_orders=child_orders)
+
+        success, errors = multi_order.validate()
+        self.assertEqual(False, success)
+        self.assertTrue("engine_passiveness" in errors[0])
+
+    def test_validate_fail_bad_schedule_discretion(self):
+        child_orders = [
+            data.ChildOrder(
+                pair="ETH:PERP-USDT",
+                side="sell",
+                base_asset_qty="10",
+            ),
+        ]
+        multi_order = self._build_multi_order_request(schedule_discretion=-1, child_orders=child_orders)
+
+        success, errors = multi_order.validate()
+        self.assertEqual(False, success)
+        self.assertTrue("schedule_discretion" in errors[0])
+
+    def test_validate_fail_bad_strategy_params(self):
+        child_orders = [
+            data.ChildOrder(
+                pair="ETH:PERP-USDT",
+                side="sell",
+                base_asset_qty="10",
+            ),
+        ]
+        multi_order = self._build_multi_order_request(strategy_params={"asdf": 1}, child_orders=child_orders)
+
+        success, errors = multi_order.validate()
+        self.assertEqual(False, success)
+        self.assertTrue("strategy_params" in errors[0])
+
+    def test_validate_fail_child_orders_validate(self):
+        child_orders = [
+            data.ChildOrder(
+                pair="ETHUSDT",
+                side="sell",
+                base_asset_qty="10",
+            ),
+        ]
+        multi_order = self._build_multi_order_request(child_orders=child_orders)
+
+        success, errors = multi_order.validate()
+        self.assertEqual(False, success)
+        self.assertTrue("pair" in errors[0], errors)
+
+    def test_to_post_body(self):
+        child_orders = [
+            data.ChildOrder(
+                pair="ETH:PERP-USDT",
+                side="sell",
+                base_asset_qty="10",
+            ),
+            data.ChildOrder(
+                pair="ETH-USDT",
+                side="buy",
+                base_asset_qty="10",
+            ),
+        ]
+
+        multi_order = self._build_multi_order_request(
+            strategy="VWAP",
+            duration=180,
+            accounts=["abc"],
+            strategy_params={"passive_only": True},
+            engine_passiveness=0.1,
+            schedule_discretion=0.2,
+            child_orders=child_orders,
+        )
+        body = multi_order.to_post_body()
+
+        self.assertEqual("VWAP", body["strategy"])
+        self.assertEqual(180, body["duration"])
+        self.assertEqual(["abc"], body["accounts"])
+        self.assertEqual({"passive_only": True}, body["strategy_params"])
+        self.assertEqual(0.1, body["engine_passiveness"])
+        self.assertEqual(0.2, body["schedule_discretion"])
+        self.assertEqual("ETH:PERP-USDT", body["child_orders"][0]["pair"])
+        self.assertEqual("sell", body["child_orders"][0]["side"])
+        self.assertEqual("10", body["child_orders"][0]["base_asset_qty"])
+        self.assertEqual("ETH-USDT", body["child_orders"][1]["pair"])
+        self.assertEqual("buy", body["child_orders"][1]["side"])
+        self.assertEqual("10", body["child_orders"][1]["base_asset_qty"])
+
+class ChildOrderTest(TestCase):
+    def test_validate_success(self):
+        order = data.ChildOrder(
+            pair="ETH-USDT",
+            side="sell",
+            base_asset_qty="10",
+        )
+        success, error = order.validate()
+
+        self.assertEqual(True, success)
+        self.assertTrue(error is None)
+
+    def test_validate_fail_bad_pair(self):
+        order = data.ChildOrder(
+            pair="ETHUSDT",
+            side="sell",
+            base_asset_qty="10",
+        )
+        success, error = order.validate()
+
+        self.assertEqual(False, success)
+        self.assertTrue("pair" in error)
+
+    def test_validate_fail_side_pair(self):
+        order = data.ChildOrder(
+            pair="ETH-USDT",
+            side="barter",
+            base_asset_qty="10",
+        )
+        success, error = order.validate()
+
+        self.assertEqual(False, success)
+        self.assertTrue("side" in error)
