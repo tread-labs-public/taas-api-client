@@ -1,5 +1,5 @@
 from unittest import TestCase
-from taas_api import data
+from taas_api import PlaceOrderRequest, PlaceMultiOrderRequest, ChildOrder
 
 class PlaceOrderRequestTest(TestCase):
     def _build_order_request(self, **kwargs):
@@ -13,7 +13,7 @@ class PlaceOrderRequestTest(TestCase):
         }
 
         params.update(**kwargs)
-        return data.PlaceOrderRequest(**params)
+        return PlaceOrderRequest(**params)
 
     def test_validate_success(self):
         order_request = self._build_order_request()
@@ -145,16 +145,16 @@ class PlaceMultiOrderRequestTest(TestCase):
         }
 
         params.update(**kwargs)
-        return data.PlaceMultiOrderRequest(**params)
+        return PlaceMultiOrderRequest(**params)
 
     def test_validate_success(self):
         child_orders = [
-            data.ChildOrder(
+            ChildOrder(
                 pair="ETH:PERP-USDT",
                 side="sell",
                 base_asset_qty="10",
             ),
-            data.ChildOrder(
+            ChildOrder(
                 pair="ETH-USDT",
                 side="buy",
                 base_asset_qty="10",
@@ -169,12 +169,12 @@ class PlaceMultiOrderRequestTest(TestCase):
 
     def test_validate_success_all_fields(self):
         child_orders = [
-            data.ChildOrder(
+            ChildOrder(
                 pair="ETH:PERP-USDT",
                 side="sell",
                 base_asset_qty="10",
             ),
-            data.ChildOrder(
+            ChildOrder(
                 pair="ETH-USDT",
                 side="buy",
                 base_asset_qty="10",
@@ -202,7 +202,7 @@ class PlaceMultiOrderRequestTest(TestCase):
 
     def test_validate_fail_bad_strategy(self):
         child_orders = [
-            data.ChildOrder(
+            ChildOrder(
                 pair="ETH:PERP-USDT",
                 side="sell",
                 base_asset_qty="10",
@@ -216,7 +216,7 @@ class PlaceMultiOrderRequestTest(TestCase):
 
     def test_validate_fail_bad_engine_passiveness(self):
         child_orders = [
-            data.ChildOrder(
+            ChildOrder(
                 pair="ETH:PERP-USDT",
                 side="sell",
                 base_asset_qty="10",
@@ -230,7 +230,7 @@ class PlaceMultiOrderRequestTest(TestCase):
 
     def test_validate_fail_bad_schedule_discretion(self):
         child_orders = [
-            data.ChildOrder(
+            ChildOrder(
                 pair="ETH:PERP-USDT",
                 side="sell",
                 base_asset_qty="10",
@@ -244,7 +244,7 @@ class PlaceMultiOrderRequestTest(TestCase):
 
     def test_validate_fail_bad_strategy_params(self):
         child_orders = [
-            data.ChildOrder(
+            ChildOrder(
                 pair="ETH:PERP-USDT",
                 side="sell",
                 base_asset_qty="10",
@@ -258,7 +258,7 @@ class PlaceMultiOrderRequestTest(TestCase):
 
     def test_validate_fail_child_orders_validate(self):
         child_orders = [
-            data.ChildOrder(
+            ChildOrder(
                 pair="ETHUSDT",
                 side="sell",
                 base_asset_qty="10",
@@ -272,12 +272,12 @@ class PlaceMultiOrderRequestTest(TestCase):
 
     def test_to_post_body(self):
         child_orders = [
-            data.ChildOrder(
+            ChildOrder(
                 pair="ETH:PERP-USDT",
                 side="sell",
                 base_asset_qty="10",
             ),
-            data.ChildOrder(
+            ChildOrder(
                 pair="ETH-USDT",
                 side="buy",
                 base_asset_qty="10",
@@ -310,7 +310,7 @@ class PlaceMultiOrderRequestTest(TestCase):
 
 class ChildOrderTest(TestCase):
     def test_validate_success(self):
-        order = data.ChildOrder(
+        order = ChildOrder(
             pair="ETH-USDT",
             side="sell",
             base_asset_qty="10",
@@ -321,7 +321,7 @@ class ChildOrderTest(TestCase):
         self.assertTrue(error is None)
 
     def test_validate_fail_bad_pair(self):
-        order = data.ChildOrder(
+        order = ChildOrder(
             pair="ETHUSDT",
             side="sell",
             base_asset_qty="10",
@@ -332,7 +332,7 @@ class ChildOrderTest(TestCase):
         self.assertTrue("pair" in error)
 
     def test_validate_fail_side_pair(self):
-        order = data.ChildOrder(
+        order = ChildOrder(
             pair="ETH-USDT",
             side="barter",
             base_asset_qty="10",
