@@ -95,6 +95,7 @@ class PlaceMultiOrderRequest:
     engine_passiveness: float = None
     schedule_discretion: float = None
     strategy_params: dict = None
+    exposure_tolerance: float = None
 
     def validate(self):
         if len(self.child_orders) == 0:
@@ -112,6 +113,10 @@ class PlaceMultiOrderRequest:
         if self.schedule_discretion is not None:
             if not (0 <= self.schedule_discretion <= 1):
                 return False, ["schedule_discretion out of range, must be [0,1]"]
+
+        if self.exposure_tolerance is not None:
+            if not (0.1 <= self.exposure_tolerance <= 1):
+                return False, ["schedule_discretion out of range, must be [0.1,1]"]
 
         valid_strategy_params = ["passive_only", "reduce_only"]
 

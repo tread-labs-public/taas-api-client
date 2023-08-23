@@ -185,6 +185,7 @@ class PlaceMultiOrderRequestTest(TestCase):
             strategy_params={"passive_only": True},
             engine_passiveness=0.1,
             schedule_discretion=0.1,
+            exposure_tolerance=0.1,
             child_orders=child_orders
         )
         success, errors = multi_order.validate()
@@ -291,6 +292,7 @@ class PlaceMultiOrderRequestTest(TestCase):
             strategy_params={"passive_only": True},
             engine_passiveness=0.1,
             schedule_discretion=0.2,
+            exposure_tolerance=0.3,
             child_orders=child_orders,
         )
         body = multi_order.to_post_body()
@@ -301,6 +303,7 @@ class PlaceMultiOrderRequestTest(TestCase):
         self.assertEqual({"passive_only": True}, body["strategy_params"])
         self.assertEqual(0.1, body["engine_passiveness"])
         self.assertEqual(0.2, body["schedule_discretion"])
+        self.assertEqual(0.3, body["exposure_tolerance"])
         self.assertEqual("ETH:PERP-USDT", body["child_orders"][0]["pair"])
         self.assertEqual("sell", body["child_orders"][0]["side"])
         self.assertEqual("10", body["child_orders"][0]["base_asset_qty"])
