@@ -68,7 +68,6 @@ class Client(BaseClient):
 
         if not validate_success:
             raise ValueError(str(errors))
-
         return self.post(path=f"/api/multi_orders/", data=request.to_post_body())
 
     def place_order(self, request: data.PlaceOrderRequest):
