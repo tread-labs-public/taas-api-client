@@ -145,7 +145,6 @@ class PlaceMultiOrderRequestTest(TestCase):
         }
 
         params.update(**kwargs)
-        rq = PlaceMultiOrderRequest(**params)
         return PlaceMultiOrderRequest(**params)
 
 
