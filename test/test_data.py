@@ -147,6 +147,7 @@ class PlaceMultiOrderRequestTest(TestCase):
         params.update(**kwargs)
         return PlaceMultiOrderRequest(**params)
 
+
     def test_validate_success(self):
         child_orders = [
             ChildOrder(

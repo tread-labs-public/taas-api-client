@@ -17,6 +17,8 @@ class PlaceOrderRequest:
     quote_asset_qty: Union[int, float, str] = None
     engine_passiveness: float = None
     schedule_discretion: float = None
+    order_condition: str = None
+    order_condition_expiry: str = None
     limit_price: Union[int, float, str] = None
     strategy_params: dict = None
     notes: str = None
@@ -94,6 +96,8 @@ class PlaceMultiOrderRequest:
     child_orders: List[ChildOrder]
     engine_passiveness: float = None
     schedule_discretion: float = None
+    order_condition: str = None
+    order_condition_expiry: str = None
     strategy_params: dict = None
 
     def validate(self):
