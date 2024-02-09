@@ -17,6 +17,7 @@ class PlaceOrderRequest:
     quote_asset_qty: Union[int, float, str] = None
     engine_passiveness: float = None
     schedule_discretion: float = None
+    alpha_tilt: float = None
     order_condition: str = None
     order_condition_expiry: str = None
     limit_price: Union[int, float, str] = None
@@ -52,6 +53,10 @@ class PlaceOrderRequest:
         if self.schedule_discretion is not None:
             if not (0 <= self.schedule_discretion <= 1):
                 return False, "schedule_discretion out of range, must be [0,1]"
+
+        if self.alpha_tilt is not None:
+            if not (-1 <= self.alpha_tilt <= 1):
+                return False, ["alpha_tilt out of range, must be [-1,1]"]
 
         valid_strategy_params = ["passive_only", "reduce_only"]
 
@@ -96,6 +101,7 @@ class PlaceMultiOrderRequest:
     child_orders: List[ChildOrder]
     engine_passiveness: float = None
     schedule_discretion: float = None
+    alpha_tilt: float = None
     order_condition: str = None
     order_condition_expiry: str = None
     strategy_params: dict = None
@@ -117,6 +123,10 @@ class PlaceMultiOrderRequest:
         if self.schedule_discretion is not None:
             if not (0 <= self.schedule_discretion <= 1):
                 return False, ["schedule_discretion out of range, must be [0,1]"]
+
+        if self.alpha_tilt is not None:
+            if not (-1 <= self.alpha_tilt <= 1):
+                return False, ["alpha_tilt out of range, must be [-1,1]"]
 
         if self.exposure_tolerance is not None:
             if not (0.1 <= self.exposure_tolerance <= 1):
