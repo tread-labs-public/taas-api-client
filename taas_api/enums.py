@@ -4,8 +4,8 @@ class Strategy(Enum):
     IS = "IS"
     TWAP = "TWAP"
     VWAP = "VWAP"
-    LIMIT = "LIMIT"
-    MARKET= "MARKET"
+    LIMIT = "Limit"
+    MARKET= "Market"
 
 class Side(Enum):
     BUY = "buy"
