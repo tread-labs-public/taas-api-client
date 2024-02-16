@@ -28,6 +28,7 @@ class PlaceOrderRequestTest(TestCase):
             quote_asset_qty=20000.0,
             engine_passiveness=0.2,
             schedule_discretion=0.08,
+            alpha_tilt=0.5,
             limit_price=1800.1,
             strategy_params={"reduce_only": True},
             notes="wow!!!",
@@ -111,6 +112,7 @@ class PlaceOrderRequestTest(TestCase):
             quote_asset_qty=20000.0,
             engine_passiveness=0.2,
             schedule_discretion=0.08,
+            alpha_tilt=0.5,
             limit_price=1800.1,
             strategy_params={"reduce_only": True},
             notes="wow!!!",
@@ -130,6 +132,7 @@ class PlaceOrderRequestTest(TestCase):
         self.assertEqual(20000, post_body["quote_asset_qty"])
         self.assertEqual(0.2, post_body["engine_passiveness"])
         self.assertEqual(0.08, post_body["schedule_discretion"])
+        self.assertEqual(0.5, post_body["alpha_tilt"])
         self.assertEqual(1800.1, post_body["limit_price"])
         self.assertEqual({"reduce_only": True}, post_body["strategy_params"])
         self.assertEqual("wow!!!", post_body["notes"])
@@ -244,6 +247,20 @@ class PlaceMultiOrderRequestTest(TestCase):
         self.assertEqual(False, success)
         self.assertTrue("schedule_discretion" in errors[0])
 
+    def test_validate_fail_bad_alpha_tilt(self):
+        child_orders = [
+            ChildOrder(
+                pair="ETH:PERP-USDT",
+                side="sell",
+                base_asset_qty="10",
+            ),
+        ]
+        multi_order = self._build_multi_order_request(alpha_tilt=-2, child_orders=child_orders)
+
+        success, errors = multi_order.validate()
+        self.assertEqual(False, success)
+        self.assertTrue("alpha_tilt" in errors[0])
+
     def test_validate_fail_bad_strategy_params(self):
         child_orders = [
             ChildOrder(
@@ -293,7 +310,8 @@ class PlaceMultiOrderRequestTest(TestCase):
             strategy_params={"passive_only": True},
             engine_passiveness=0.1,
             schedule_discretion=0.2,
-            exposure_tolerance=0.3,
+            alpha_tilt=0.3,
+            exposure_tolerance=0.4,
             child_orders=child_orders,
         )
         body = multi_order.to_post_body()
@@ -304,7 +322,8 @@ class PlaceMultiOrderRequestTest(TestCase):
         self.assertEqual({"passive_only": True}, body["strategy_params"])
         self.assertEqual(0.1, body["engine_passiveness"])
         self.assertEqual(0.2, body["schedule_discretion"])
-        self.assertEqual(0.3, body["exposure_tolerance"])
+        self.assertEqual(0.3, body["alpha_tilt"])
+        self.assertEqual(0.4, body["exposure_tolerance"])
         self.assertEqual("ETH:PERP-USDT", body["child_orders"][0]["pair"])
         self.assertEqual("sell", body["child_orders"][0]["side"])
         self.assertEqual("10", body["child_orders"][0]["base_asset_qty"])
