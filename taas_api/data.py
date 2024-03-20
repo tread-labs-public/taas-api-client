@@ -5,6 +5,7 @@ import re
 
 INTERNAL_PAIR_RE_PATTERN = r"([a-zA-Z0-9]+)(:\w+)?-([a-zA-Z0-9]+)"
 
+
 @dataclass
 class PlaceOrderRequest:
     accounts: List[str]
@@ -72,6 +73,7 @@ class PlaceOrderRequest:
     def to_post_body(self):
         return {k: v for k, v in asdict(self).items() if v is not None}
 
+
 @dataclass
 class ChildOrder:
     pair: str
@@ -130,7 +132,7 @@ class PlaceMultiOrderRequest:
 
         if self.exposure_tolerance is not None:
             if not (0.1 <= self.exposure_tolerance <= 1):
-                return False, ["schedule_discretion out of range, must be [0.1,1]"]
+                return False, ["exposure_tolerance out of range, must be [0.1,1]"]
 
         valid_strategy_params = ["passive_only", "reduce_only"]
 

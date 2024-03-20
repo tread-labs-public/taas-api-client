@@ -70,6 +70,9 @@ class Client(BaseClient):
             raise ValueError(str(errors))
         return self.post(path=f"/api/multi_orders/", data=request.to_post_body())
 
+    def cancel_multi_order(self, order_id):
+        return self.delete(path=f"/api/multi_order/{order_id}")
+
     def place_order(self, request: data.PlaceOrderRequest):
         if not isinstance(request, data.PlaceOrderRequest):
             raise ValueError(f"Expecting request to be of type {data.PlaceOrderRequest}")
