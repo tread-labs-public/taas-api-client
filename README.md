@@ -24,23 +24,27 @@ c = Client(url="http://localhost:8000", auth_token="b72ab3bcbce4423208a07f52b5ae
 
 Submits a new order with specified parameters such as accounts, trading pair, side (buy/sell), sell token amount, duration, strategy, and engine passiveness. The place order endpoint has many fields with many restrictions. To simplify the call and run validations against the parameters, we provide a data object: `PlaceOrderRequest`. Every field can be interacted with like a regular attribute in Python.
 
-| Field               | Description                                                                                       |
-|---------------------|---------------------------------------------------------------------------------------------------|
-| accounts            | A list of account names to be available for the order.                                      |
-| pair                | The trading pair for the order, following the syntax 'BASE-QUOTE' or 'BASE:VARIANT-QUOTE'.    |
-| side                | The side of the order, indicating whether it's a buy or sell ('buy' or 'sell').                |
-| duration            | The duration of the order in seconds.                                                          |
-| strategy            | The chosen trading strategy for the order (e.g. TWAP, VWAP, etc)                                |
-| sell_token_amount   | The amount of the sell token to be used in the order, if applicable.                            |
-| base_asset_qty      | The quantity of the base asset (token being bought) in the order, if applicable.                |
-| quote_asset_qty     | The quantity of the quote asset (token being sold) in the order, if applicable.                 |
-| engine_passiveness  | The engine passiveness parameter of the order, within the range [0, 0.1], 0.02 is default.         |
-| schedule_discretion | The schedule discretion parameter of the order, within the range [0, 0.1], 0.1 is default.        |
-| limit_price         | The limit price that limits all the placements in the order, if applicable.                     |
-| strategy_params     | Additional parameters specific to the chosen trading strategy, provided as a dictionary.        |
-| notes               | Any additional notes or comments related to the order.                                          |
-| custom_order_id     | A custom identifier for the order, if provided.                                                |
-| updated_leverage    | An updated leverage value for the order, if applicable. This will persist on the exchange for the pair.   |
+| Field               | Description                                                                                                        |
+|---------------------|--------------------------------------------------------------------------------------------------------------------|
+| accounts            | A list of account names to be available for the order.                                                             |
+| pair                | The trading pair for the order, following the syntax 'BASE-QUOTE' or 'BASE:VARIANT-QUOTE'.                         |
+| side                | The side of the order, indicating whether it's a buy or sell ('buy' or 'sell').                                    |
+| duration            | The duration of the order in seconds.                                                                              |
+| strategy            | The chosen trading strategy for the order (e.g. TWAP, VWAP, etc)                                                   |
+| sell_token_amount   | The amount of the sell token to be used in the order, if applicable.                                               |
+| base_asset_qty      | The quantity of the base asset (token being bought) in the order, if applicable.                                   |
+| quote_asset_qty     | The quantity of the quote asset (token being sold) in the order, if applicable.                                    |
+| engine_passiveness  | The engine passiveness parameter of the order, within the range [0, 0.1], default is 0.02.                         |
+| schedule_discretion | The schedule discretion parameter of the order, within the range [0, 0.1], default is 0.08.                        |
+| alpha_tilt          | The alpha tilt parameter of the order, within the range [-1, 1], 0 is default.                                     |
+| pov_target          | The pov target parameter of the order, within the range [0, 100], default is None. Limited to non-multi orders.    |
+| pov_limit           | The pov limit parameter of the order, within the range [0, 100], default is None. Limited to non-multi orders.     |
+| exposure_tolerance  | The exposure tolerance parameter of the order, within the range [0.1, 1], 0.5 is default. Limited to multi orders. |
+| limit_price         | The limit price that limits all the placements in the order, if applicable.                                        |
+| strategy_params     | Additional parameters specific to the chosen trading strategy, provided as a dictionary.                           |
+| notes               | Any additional notes or comments related to the order.                                                             |
+| custom_order_id     | A custom identifier for the order, if provided.                                                                    |
+| updated_leverage    | An updated leverage value for the order, if applicable. This will persist on the exchange for the pair.            |
 
 Please note that the provided validation heuristics are designed to ensure that the inputs meet certain criteria before proceeding with order placement.
 [For more details on the order APIs](https://tread-labs.gitbook.io/api-docs/interacting-with-the-api/api-reference/orders)

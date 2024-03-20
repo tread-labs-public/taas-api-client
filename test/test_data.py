@@ -113,6 +113,8 @@ class PlaceOrderRequestTest(TestCase):
             engine_passiveness=0.2,
             schedule_discretion=0.08,
             alpha_tilt=0.5,
+            pov_limit=0.9,
+            pov_target=0.9,
             limit_price=1800.1,
             strategy_params={"reduce_only": True},
             notes="wow!!!",
@@ -133,6 +135,8 @@ class PlaceOrderRequestTest(TestCase):
         self.assertEqual(0.2, post_body["engine_passiveness"])
         self.assertEqual(0.08, post_body["schedule_discretion"])
         self.assertEqual(0.5, post_body["alpha_tilt"])
+        self.assertEqual(0.9, post_body["pov_limit"])
+        self.assertEqual(0.9, post_body["pov_target"])
         self.assertEqual(1800.1, post_body["limit_price"])
         self.assertEqual({"reduce_only": True}, post_body["strategy_params"])
         self.assertEqual("wow!!!", post_body["notes"])

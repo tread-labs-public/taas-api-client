@@ -18,6 +18,8 @@ class PlaceOrderRequest:
     engine_passiveness: float = None
     schedule_discretion: float = None
     alpha_tilt: float = None
+    pov_target: float = None
+    pov_limit: float = None
     order_condition: str = None
     order_condition_expiry: str = None
     limit_price: Union[int, float, str] = None
@@ -57,6 +59,14 @@ class PlaceOrderRequest:
         if self.alpha_tilt is not None:
             if not (-1 <= self.alpha_tilt <= 1):
                 return False, ["alpha_tilt out of range, must be [-1,1]"]
+
+        if self.pov_target is not None:
+            if not (0 <= self.pov_target <= 100):
+                return False, ["pov_target out of range, must be [0,100]"]
+
+        if self.pov_limit is not None:
+            if not (0 <= self.pov_limit <= 100):
+                return False, ["pov_limit out of range, must be [0,100]"]
 
         valid_strategy_params = ["passive_only", "reduce_only"]
 
