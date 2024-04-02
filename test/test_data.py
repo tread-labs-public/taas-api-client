@@ -106,6 +106,32 @@ class PlaceOrderRequestTest(TestCase):
         self.assertFalse(success)
         self.assertTrue("strategy_params" in error)
 
+    def test_validate_fail_bad_pov_limit(self):
+        order_request = self._build_order_request(pov_limit=0)
+        success, error = order_request.validate()
+
+        self.assertFalse(success)
+        self.assertTrue("pov_limit" in error)
+
+        order_request = self._build_order_request(pov_limit=1.1)
+        success, error = order_request.validate()
+
+        self.assertFalse(success)
+        self.assertTrue("pov_limit" in error)
+
+    def test_validate_fail_bad_pov_limit(self):
+        order_request = self._build_order_request(pov_target=0)
+        success, error = order_request.validate()
+
+        self.assertFalse(success)
+        self.assertTrue("pov_target" in error)
+
+        order_request = self._build_order_request(pov_target=1.1)
+        success, error = order_request.validate()
+
+        self.assertFalse(success)
+        self.assertTrue("pov_target" in error)
+
     def test_to_post_body(self):
         order_request = self._build_order_request(
             base_asset_qty=None,
@@ -118,6 +144,8 @@ class PlaceOrderRequestTest(TestCase):
             notes="wow!!!",
             custom_order_id="abcd-efgh",
             updated_leverage=10,
+            pov_limit=3.2,
+            pov_target=2.1,
         )
 
         post_body = order_request.to_post_body()
@@ -138,6 +166,8 @@ class PlaceOrderRequestTest(TestCase):
         self.assertEqual("wow!!!", post_body["notes"])
         self.assertEqual("abcd-efgh", post_body["custom_order_id"])
         self.assertEqual(10, post_body["updated_leverage"])
+        self.assertEqual(3.2, post_body["pov_limit"])
+        self.assertEqual(2.1, post_body["pov_target"])
 
 class PlaceMultiOrderRequestTest(TestCase):
     def _build_multi_order_request(self, **kwargs):

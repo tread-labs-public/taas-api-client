@@ -1,5 +1,5 @@
 from dataclasses import dataclass, asdict
-from typing import List, Union
+from typing import List
 from taas_api.enums import Strategy, Side
 import re
 
@@ -12,15 +12,17 @@ class PlaceOrderRequest:
     side: str
     duration: int
     strategy: str
-    sell_token_amount: Union[int, float, str] = None
-    base_asset_qty: Union[int, float, str] = None
-    quote_asset_qty: Union[int, float, str] = None
+    sell_token_amount: float = None
+    base_asset_qty: float = None
+    quote_asset_qty: float = None
     engine_passiveness: float = None
     schedule_discretion: float = None
     alpha_tilt: float = None
     order_condition: str = None
     order_condition_expiry: str = None
-    limit_price: Union[int, float, str] = None
+    pov_limit: float = None
+    pov_target: float = None
+    limit_price: float = None
     strategy_params: dict = None
     notes: str = None
     custom_order_id: str = None
@@ -56,7 +58,15 @@ class PlaceOrderRequest:
 
         if self.alpha_tilt is not None:
             if not (-1 <= self.alpha_tilt <= 1):
-                return False, ["alpha_tilt out of range, must be [-1,1]"]
+                return False, "alpha_tilt out of range, must be [-1,1]"
+
+        if self.pov_limit is not None:
+            if not (0 < self.pov_limit <= 1):
+                return False, "pov_limit is a ratio within (0,1]"
+
+        if self.pov_target is not None:
+            if not (0 < self.pov_target <= 1):
+                return False, "pov_target is a ratio within (0,1]"
 
         valid_strategy_params = ["passive_only", "reduce_only"]
 
@@ -76,8 +86,8 @@ class PlaceOrderRequest:
 class ChildOrder:
     pair: str
     side: str
-    base_asset_qty: Union[int, float, str] = None
-    quote_asset_qty: Union[int, float, str] = None
+    base_asset_qty: float = None
+    quote_asset_qty: float = None
 
     def validate(self):
         try:
