@@ -1,3 +1,4 @@
+from typing import List
 import requests
 import logging
 from urllib.parse import urljoin
@@ -51,7 +52,7 @@ class BaseClient:
         }
 
 class Client(BaseClient):
-    def get_order(self, order_id):
+    def get_order(self, order_id: str):
         return self.get(path=f"/api/order/{order_id}")
 
     def get_balances(self):
@@ -70,7 +71,7 @@ class Client(BaseClient):
             raise ValueError(str(errors))
         return self.post(path=f"/api/multi_orders/", data=request.to_post_body())
 
-    def cancel_multi_order(self, order_id):
+    def cancel_multi_order(self, order_id: str):
         return self.delete(path=f"/api/multi_order/{order_id}")
 
     def place_order(self, request: data.PlaceOrderRequest):
@@ -84,5 +85,18 @@ class Client(BaseClient):
 
         return self.post(path="/api/orders/", data=request.to_post_body())
 
-    def cancel_order(self, order_id):
+    def cancel_order(self, order_id: str):
         return self.delete(path=f"/api/order/{order_id}")
+
+    def close_balances(self, max_notional: float, account_names: List[str] = None, preferred_strategy: str = None):
+        data = {
+            "max_notional": max_notional,
+        }
+
+        if account_names:
+            data["account_names"] = account_names
+
+        if preferred_strategy:
+            data["preferred_strategy"] = preferred_strategy
+
+        return self.post(path="/api/close_balances/", data=data)
