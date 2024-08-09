@@ -28,6 +28,7 @@ class PlaceOrderRequest:
     notes: str = None
     custom_order_id: str = None
     updated_leverage: int = None
+    max_otc: float = None
 
     def validate(self):
         try:
@@ -68,6 +69,10 @@ class PlaceOrderRequest:
         if self.pov_target is not None:
             if not (0 < self.pov_target <= 1):
                 return False, "pov_target is a ratio within (0,1]"
+        
+        if self.max_otc is not None:
+            if self.max_otc <= 0:
+                return False, "max_otc must be a positive value"
 
         valid_strategy_params = ["passive_only", "reduce_only"]
 
@@ -162,3 +167,19 @@ class PlaceMultiOrderRequest:
 
     def to_post_body(self):
         return {k: v for k, v in asdict(self).items() if v is not None}
+
+
+@dataclass
+class GetOrderMessagesRequest:
+    order_ids: List[str]
+
+    def to_post_body(self):
+        return {"order_ids": self.order_ids}
+
+@dataclass
+class AmendOrderRequest:
+    order_id: str
+    changes: dict
+
+    def to_post_body(self):
+        return {"order_id": self.order_id, "changes": self.changes}
