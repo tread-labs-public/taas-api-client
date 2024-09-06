@@ -45,6 +45,7 @@ Submits a new order with specified parameters such as accounts, trading pair, si
 | notes               | Any additional notes or comments related to the order.                                                             |
 | custom_order_id     | A custom identifier for the order, if provided.                                                                    |
 | updated_leverage    | An updated leverage value for the order, if applicable. This will persist on the exchange for the pair.            |
+| max_otc             | The maximum amount for OTC transactions in the order. Limits the size of OTC trades.                               |
 
 Please note that the provided validation heuristics are designed to ensure that the inputs meet certain criteria before proceeding with order placement.
 [For more details on the order APIs](https://tread-labs.gitbook.io/api-docs/interacting-with-the-api/api-reference/orders)

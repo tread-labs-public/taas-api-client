@@ -100,3 +100,15 @@ class Client(BaseClient):
             data["preferred_strategy"] = preferred_strategy
 
         return self.post(path="/api/close_balances/", data=data)
+
+    def get_order_messages(self, request: data.GetOrderMessagesRequest):
+        if not isinstance(request, data.GetOrderMessagesRequest):
+            raise ValueError(f"Expecting request to be of type {data.GetOrderMessagesRequest}")
+
+        return self.post(path="/api/order_messages/", data=request.to_post_body())
+
+    def amend_order(self, request: data.AmendOrderRequest):
+        if not isinstance(request, data.AmendOrderRequest):
+            raise ValueError(f"Expecting request to be of type {data.AmendOrderRequest}")
+
+        return self.post(path="/api/amend_order/", data=request.to_post_body())
