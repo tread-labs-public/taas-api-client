@@ -21,7 +21,7 @@ class BaseClient:
             )
         )
 
-    def get(self, path: str, params: dict ={}):
+    def get(self, path: str, params: dict = {}):
         logger.info(f"GET {path}")
         return self._handle_response(
             requests.get(
@@ -58,8 +58,11 @@ class Client(BaseClient):
     def get_balances(self):
         return self.get(path=f"/api/balances/")
 
-    def get_orders(self):
-        return self.get(path=f"/api/orders/")
+    def get_all_orders(self, request: data.GetOrderRequest):
+        if not isinstance(request, data.GetOrderRequest):
+            raise ValueError(f"Expecting request to be of type {data.GetOrderRequest}")
+
+        return self.get(path="/api/orders/", params=request.to_post_body())
 
     def place_multi_order(self, request: data.PlaceMultiOrderRequest):
         if not isinstance(request, data.PlaceMultiOrderRequest):
@@ -69,7 +72,7 @@ class Client(BaseClient):
 
         if not validate_success:
             raise ValueError(str(errors))
-        return self.post(path=f"/api/multi_orders/", data=request.to_post_body())
+        return self.post(path="/api/multi_orders/", data=request.to_post_body())
 
     def cancel_multi_order(self, order_id: str):
         return self.delete(path=f"/api/multi_order/{order_id}")
