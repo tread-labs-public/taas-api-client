@@ -1,5 +1,5 @@
 from dataclasses import dataclass, asdict
-from typing import List
+from typing import List, Optional
 from taas_api.enums import Strategy, Side
 import re
 
@@ -183,3 +183,15 @@ class AmendOrderRequest:
 
     def to_post_body(self):
         return {"order_id": self.order_id, "changes": self.changes}
+
+
+@dataclass
+class GetOrderRequest:
+    status: Optional[str] = None
+    before: Optional[str] = None
+    after: Optional[str] = None
+    page: Optional[int] = None
+    page_size: Optional[int] = None
+
+    def to_post_body(self):
+        return {k: v for k, v in asdict(self).items() if v is not None}
