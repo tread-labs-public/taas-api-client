@@ -93,7 +93,7 @@ class PlaceOrderRequestTest(TestCase):
         self.assertFalse(success)
         self.assertTrue("engine_passiveness" in error)
 
-    def test_validate_fail_bad_strategy_params(self):
+    def test_validate_allow_bad_strategy_params(self):
         order_request = self._build_order_request(strategy_params="asdf")
         success, error = order_request.validate()
 
@@ -291,7 +291,7 @@ class PlaceMultiOrderRequestTest(TestCase):
         self.assertEqual(False, success)
         self.assertTrue("alpha_tilt" in errors[0])
 
-    def test_validate_fail_bad_strategy_params(self):
+    def test_validate_allow_bad_strategy_params(self):
         child_orders = [
             ChildOrder(
                 pair="ETH:PERP-USDT",
