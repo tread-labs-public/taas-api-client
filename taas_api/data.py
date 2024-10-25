@@ -149,14 +149,9 @@ class PlaceMultiOrderRequest:
             if not (0.1 <= self.exposure_tolerance <= 1):
                 return False, ["exposure_tolerance out of range, must be [0.1,1]"]
 
-        valid_strategy_params = ["passive_only", "reduce_only"]
-
         if self.strategy_params is not None:
             if not isinstance(self.strategy_params, dict):
                 return False, ["strategy_params must be a dict"]
-
-            if any([key not in valid_strategy_params for key in self.strategy_params.keys()]):
-                return False, [f"must use valid strategy_params: {valid_strategy_params}"]
 
         order_validations = [order.validate() for order in self.child_orders]
 
