@@ -148,9 +148,17 @@ res = c.place_multi_order(request)
 
 ### Get Order Details
 Retrieves the details of a specific order using the order ID.
+Call is very heavy and will fetch all placements and fills. Strongly recommended to use get_order_summary below.
 
 ```
 c.get_order("045158ea-a252-4306-8847-1b27f8157143")
+```
+
+### Get Order Summary
+Retrieves key order attributes using the order ID.
+
+```
+c.get_order_summary("045158ea-a252-4306-8847-1b27f8157143")
 ```
 
 ### Cancelling Active Orders
