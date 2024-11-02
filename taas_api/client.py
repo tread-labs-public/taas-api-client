@@ -55,6 +55,9 @@ class Client(BaseClient):
     def get_order(self, order_id: str):
         return self.get(path=f"/api/order/{order_id}")
 
+    def get_order_summary(self, order_id: str):
+        return self.get(path=f"/api/order_summary/{order_id}")
+
     def get_balances(self):
         return self.get(path=f"/api/balances/")
 
