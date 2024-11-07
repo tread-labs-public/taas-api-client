@@ -1,6 +1,4 @@
-<img width="1037" alt="TreadLabs_logo_light@2x" src="https://uploads-ssl.webflow.com/631952c105a64138b98a5339/64af023765b5d70df562e05f_TreadLabs_logo_light.svg">
-
-# TaaS Python Client
+# Tread.fi Python Client
 
 ## Overview
 These APIs provide a comprehensive interface to interact with a trading platform, allowing users to manage orders, view account balances, and execute various trading strategies. The endpoints are designed to facilitate the creation, retrieval, and deletion of orders, as well as the querying of account balances.
