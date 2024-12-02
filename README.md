@@ -104,7 +104,7 @@ request = PlaceMultiOrderRequest(
     accounts=["mock"],
     duration=200,
     strategy="TWAP",
-    exposure_tolerance=0.5,
+    exposure_tolerance=0.1,
     child_orders=[
         ChildOrder(
             pair="ETH:PERP-USDT",
