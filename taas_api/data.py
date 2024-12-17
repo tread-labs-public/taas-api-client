@@ -1,6 +1,6 @@
 from dataclasses import dataclass, asdict
 from typing import List, Optional
-from taas_api.enums import Strategy, Side
+from taas_api.enums import PosSide, Strategy, Side
 import re
 
 INTERNAL_PAIR_RE_PATTERN = r"([a-zA-Z0-9]+)(:\w+)?-([a-zA-Z0-9]+)"
@@ -58,8 +58,8 @@ class PlaceOrderRequest:
                 return False, "engine_passiveness out of range, must be [0,1]"
 
         if self.schedule_discretion is not None:
-            if not (0 <= self.schedule_discretion <= 1):
-                return False, "schedule_discretion out of range, must be [0,1]"
+            if not (0.02 <= self.schedule_discretion <= 1):
+                return False, "schedule_discretion out of range, must be [0.02,1]"
 
         if self.alpha_tilt is not None:
             if not (-1 <= self.alpha_tilt <= 1):
@@ -77,25 +77,24 @@ class PlaceOrderRequest:
             if self.max_otc <= 0:
                 return False, "max_otc must be a positive value"
 
-        valid_strategy_params = ["passive_only", "reduce_only"]
-
         if self.strategy_params is not None:
             if not isinstance(self.strategy_params, dict):
-                return False, "strategy_params must be a dict"
+                return False, ["strategy_params must be a dict"]
 
+            valid_strategy_params = ["passive_only", "reduce_only"]
             if any(
-                [
-                    key not in valid_strategy_params
-                    for key in self.strategy_params.keys()
-                ]
+                key not in valid_strategy_params for key in self.strategy_params.keys()
             ):
-                return False, f"must use valid strategy_params: {valid_strategy_params}"
+                return False, [f"must use valid strategy_params: {valid_strategy_params}"]
 
-        return True, None
+        order_validations = [order.validate() for order in self.child_orders]
+        if any([not success for success, error in order_validations]):
+            return False, [error for success, error in order_validations if not success]
+
+        return True, []
 
     def to_post_body(self):
         return {k: v for k, v in asdict(self).items() if v is not None}
-
 
 @dataclass
 class ChildOrder:
@@ -104,6 +103,7 @@ class ChildOrder:
     base_asset_qty: float = None
     quote_asset_qty: float = None
     pos_side: Optional[str] = None
+
 
     def validate(self):
         try:
@@ -118,6 +118,12 @@ class ChildOrder:
                 False,
                 "pair must correct syntax: {BASE}-{QUOTE} or {BASE}:{VARIANT}-{QUOTE} ex. ETH-USDT or ETH:PERP-USDT",
             )
+
+        if self.pos_side:
+            try:
+                PosSide(self.pos_side)
+            except ValueError:
+                return (False, "pos_side must be 'long' or 'short'")
 
         return True, None
 
@@ -150,18 +156,16 @@ class PlaceMultiOrderRequest:
                 return False, ["engine_passiveness out of range, must be [0,1]"]
 
         if self.schedule_discretion is not None:
-            if not (0 <= self.schedule_discretion <= 1):
-                return False, ["schedule_discretion out of range, must be [0,1]"]
+            if not (0.02 <= self.schedule_discretion <= 1):
+                return False, ["schedule_discretion out of range, must be [0.02,1]"]
 
         if self.alpha_tilt is not None:
             if not (-1 <= self.alpha_tilt <= 1):
                 return False, ["alpha_tilt out of range, must be [-1,1]"]
 
         if self.exposure_tolerance is not None:
-            if not (0.1 <= self.exposure_tolerance <= 1):
-                return False, ["exposure_tolerance out of range, must be [0.1,1]"]
-
-        valid_strategy_params = ["passive_only", "reduce_only"]
+            if not (0.02 <= self.exposure_tolerance <= 1):
+                return False, ["exposure_tolerance out of range, must be [0.02,1]"]
 
         if self.strategy_params is not None:
             if not isinstance(self.strategy_params, dict):
