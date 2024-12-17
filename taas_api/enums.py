@@ -7,6 +7,7 @@ class Strategy(Enum):
     VWAP = "VWAP"
     LIMIT = "Limit"
     MARKET = "Market"
+    ICEBERG = "Iceberg"
 
 
 class Side(Enum):

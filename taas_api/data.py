@@ -93,7 +93,7 @@ class ChildOrder:
     side: str
     base_asset_qty: float = None
     quote_asset_qty: float = None
-    pos_side: str = None
+    pos_side: Optional[str] = None
 
     def validate(self):
         try:
