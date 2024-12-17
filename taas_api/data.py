@@ -29,6 +29,7 @@ class PlaceOrderRequest:
     custom_order_id: str = None
     updated_leverage: int = None
     max_otc: float = None
+    pos_side: Optional[str] = None
 
     def validate(self):
         try:
@@ -93,7 +94,7 @@ class ChildOrder:
     side: str
     base_asset_qty: float = None
     quote_asset_qty: float = None
-    pos_side: Optional[str] = None
+    pos_side: str = None
 
     def validate(self):
         try:
