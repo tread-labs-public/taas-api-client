@@ -29,6 +29,7 @@ class PlaceOrderRequest:
     custom_order_id: str = None
     updated_leverage: int = None
     max_otc: float = None
+    pos_side: Optional[str] = None
 
     def validate(self):
         try:
