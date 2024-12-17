@@ -44,7 +44,10 @@ class PlaceOrderRequest:
         result = re.search(INTERNAL_PAIR_RE_PATTERN, self.pair)
 
         if result is None:
-            return False, "pair must correct syntax: {BASE}-{QUOTE} or {BASE}:{VARIANT}-{QUOTE} ex. ETH-USDT or ETH:PERP-USDT"
+            return (
+                False,
+                "pair must correct syntax: {BASE}-{QUOTE} or {BASE}:{VARIANT}-{QUOTE} ex. ETH-USDT or ETH:PERP-USDT",
+            )
 
         qty_fields = ["sell_token_amount", "base_asset_qty", "quote_asset_qty"]
         if all([getattr(self, field) is None for field in qty_fields]):
@@ -69,7 +72,7 @@ class PlaceOrderRequest:
         if self.pov_target is not None:
             if not (0 < self.pov_target <= 1):
                 return False, "pov_target is a ratio within (0,1]"
-        
+
         if self.max_otc is not None:
             if self.max_otc <= 0:
                 return False, "max_otc must be a positive value"
@@ -80,7 +83,12 @@ class PlaceOrderRequest:
             if not isinstance(self.strategy_params, dict):
                 return False, "strategy_params must be a dict"
 
-            if any([key not in valid_strategy_params for key in self.strategy_params.keys()]):
+            if any(
+                [
+                    key not in valid_strategy_params
+                    for key in self.strategy_params.keys()
+                ]
+            ):
                 return False, f"must use valid strategy_params: {valid_strategy_params}"
 
         return True, None
@@ -95,6 +103,7 @@ class ChildOrder:
     side: str
     base_asset_qty: float = None
     quote_asset_qty: float = None
+    pos_side: Optional[str] = None
 
     def validate(self):
         try:
@@ -105,7 +114,10 @@ class ChildOrder:
         result = re.search(INTERNAL_PAIR_RE_PATTERN, self.pair)
 
         if result is None:
-            return False, "pair must correct syntax: {BASE}-{QUOTE} or {BASE}:{VARIANT}-{QUOTE} ex. ETH-USDT or ETH:PERP-USDT"
+            return (
+                False,
+                "pair must correct syntax: {BASE}-{QUOTE} or {BASE}:{VARIANT}-{QUOTE} ex. ETH-USDT or ETH:PERP-USDT",
+            )
 
         return True, None
 
@@ -155,8 +167,15 @@ class PlaceMultiOrderRequest:
             if not isinstance(self.strategy_params, dict):
                 return False, ["strategy_params must be a dict"]
 
-            if any([key not in valid_strategy_params for key in self.strategy_params.keys()]):
-                return False, [f"must use valid strategy_params: {valid_strategy_params}"]
+            if any(
+                [
+                    key not in valid_strategy_params
+                    for key in self.strategy_params.keys()
+                ]
+            ):
+                return False, [
+                    f"must use valid strategy_params: {valid_strategy_params}"
+                ]
 
         order_validations = [order.validate() for order in self.child_orders]
 
@@ -175,6 +194,7 @@ class GetOrderMessagesRequest:
 
     def to_post_body(self):
         return {"order_ids": self.order_ids}
+
 
 @dataclass
 class AmendOrderRequest:
