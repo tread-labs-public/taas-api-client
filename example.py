@@ -84,17 +84,16 @@ def amend_order(order_id):
 
 # 8. Place Multi Order
 def place_multi_order():
-    child_orders = [
-        ChildOrder(pair="ETH:PERP-USDT", side="buy", base_asset_qty=10, account="mock"),
-        ChildOrder(pair="ETH-USDT", side="sell", base_asset_qty=10, account="mock"),
-    ]
-    accounts = [child.account for child in child_orders if child.account]
-
     request = PlaceMultiOrderRequest(
-        accounts=[accounts],
+        accounts=["mock"],
         duration=200,
         strategy="TWAP",
-        child_orders=child_orders,
+        child_orders=[
+            ChildOrder(
+                pair="ETH:PERP-USDT", side="buy", base_asset_qty=10, account="mock"
+            ),
+            ChildOrder(pair="ETH-USDT", side="sell", base_asset_qty=10, account="mock"),
+        ],
     )
     res = c.place_multi_order(request)
     print("Place Multi Order:", res)
