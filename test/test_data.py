@@ -333,7 +333,7 @@ class PlaceMultiOrderRequestTest(TestCase):
 
         success, errors = multi_order.validate()
         self.assertEqual(False, success)
-        self.assertTrue("accounts" in errors[0])
+        self.assertTrue("Accounts" in errors[0])
 
     def test_validate_fail_child_orders_validate(self):
         child_orders = [
