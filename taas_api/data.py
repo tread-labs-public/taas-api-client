@@ -95,6 +95,7 @@ class ChildOrder:
     base_asset_qty: float = None
     quote_asset_qty: float = None
     pos_side: str = None
+    account: str = None
 
     def validate(self):
         try:
