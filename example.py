@@ -90,9 +90,17 @@ def place_multi_order():
         strategy="TWAP",
         child_orders=[
             ChildOrder(
-                pair="ETH:PERP-USDT", side="buy", base_asset_qty=10, account="mock"
+                pair="ETH:PERP-USDT",
+                side="buy",
+                base_asset_qty=10,
+                account="mock",
             ),
-            ChildOrder(pair="ETH-USDT", side="sell", base_asset_qty=10, account="mock"),
+            ChildOrder(
+                pair="ETH-USDT",
+                side="sell",
+                base_asset_qty=10,
+                account="mock",
+            ),
         ],
     )
     res = c.place_multi_order(request)
