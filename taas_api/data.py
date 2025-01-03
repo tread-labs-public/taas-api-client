@@ -142,6 +142,8 @@ class PlaceMultiOrderRequest:
             self.accounts = list(
                 {order.account for order in self.child_orders if order.account}
             )
+            if not self.accounts:
+                return False, ["Accounts must be provided for child orders"]
 
         try:
             Strategy(self.strategy)
