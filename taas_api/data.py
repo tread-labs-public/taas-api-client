@@ -122,10 +122,10 @@ class ChildOrder:
 
 @dataclass
 class PlaceMultiOrderRequest:
-    accounts: List[str]
     duration: int
     strategy: str
     child_orders: List[ChildOrder]
+    accounts: dict = None
     engine_passiveness: float = None
     schedule_discretion: float = None
     alpha_tilt: float = None
@@ -137,6 +137,11 @@ class PlaceMultiOrderRequest:
     def validate(self):
         if len(self.child_orders) == 0:
             return False, [f"No child orders declared!"]
+
+        if not self.accounts:
+            self.accounts = list(
+                {order.account for order in self.child_orders if order.account}
+            )
 
         try:
             Strategy(self.strategy)
