@@ -95,6 +95,7 @@ class ChildOrder:
     base_asset_qty: float = None
     quote_asset_qty: float = None
     pos_side: str = None
+    account: str = None
 
     def validate(self):
         try:
@@ -121,10 +122,10 @@ class ChildOrder:
 
 @dataclass
 class PlaceMultiOrderRequest:
-    accounts: List[str]
     duration: int
     strategy: str
     child_orders: List[ChildOrder]
+    accounts: dict = None
     engine_passiveness: float = None
     schedule_discretion: float = None
     alpha_tilt: float = None
@@ -136,6 +137,13 @@ class PlaceMultiOrderRequest:
     def validate(self):
         if len(self.child_orders) == 0:
             return False, [f"No child orders declared!"]
+
+        if not self.accounts:
+            self.accounts = list(
+                {order.account for order in self.child_orders if order.account}
+            )
+            if not self.accounts:
+                return False, ["Accounts must be provided for child orders"]
 
         try:
             Strategy(self.strategy)

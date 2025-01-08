@@ -194,11 +194,13 @@ class PlaceMultiOrderRequestTest(TestCase):
                 pair="ETH:PERP-USDT",
                 side="sell",
                 base_asset_qty="10",
+                account="mock",
             ),
             ChildOrder(
                 pair="ETH-USDT",
                 side="buy",
                 base_asset_qty="10",
+                account="mock",
             ),
         ]
 
@@ -214,11 +216,13 @@ class PlaceMultiOrderRequestTest(TestCase):
                 pair="ETH:PERP-USDT",
                 side="sell",
                 base_asset_qty="10",
+                account="mock",
             ),
             ChildOrder(
                 pair="ETH-USDT",
                 side="buy",
                 base_asset_qty="10",
+                account="mock",
             ),
         ]
 
@@ -228,6 +232,7 @@ class PlaceMultiOrderRequestTest(TestCase):
             schedule_discretion=0.1,
             exposure_tolerance=0.1,
             child_orders=child_orders,
+            accounts=["mock"],
         )
         success, errors = multi_order.validate()
 
@@ -320,6 +325,22 @@ class PlaceMultiOrderRequestTest(TestCase):
 
         success, errors = multi_order.validate()
         self.assertEqual(True, success)
+
+    def test_validate_fail_no_accounts(self):
+        child_orders = [
+            ChildOrder(
+                pair="ETH:PERP-USDT",
+                side="sell",
+                base_asset_qty="10",
+            ),
+        ]
+        multi_order = self._build_multi_order_request(
+            accounts=[], child_orders=child_orders
+        )
+
+        success, errors = multi_order.validate()
+        self.assertEqual(False, success)
+        self.assertTrue("Accounts" in errors[0])
 
     def test_validate_fail_child_orders_validate(self):
         child_orders = [

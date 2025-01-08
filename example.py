@@ -6,13 +6,14 @@ from taas_api.data import (
     PlaceOrderRequest,
     PlaceMultiOrderRequest,
     ChildOrder,
-    GetOrderRequest
+    GetOrderRequest,
 )
 
 # Initialize the client
-api_url = "your TaaS API URL"  
-auth_token = "your API authentication token" 
+api_url = "your TaaS API URL"
+auth_token = "your API authentication token"
 c = Client(api_url, auth_token)
+
 
 # 1. Place Single Order
 def place_single_order():
@@ -22,9 +23,9 @@ def place_single_order():
         side="buy",
         base_asset_qty=473.9736,
         strategy="TWAP",
-        duration = 900,
-        engine_passiveness = 0.01,
-        notes = "Okx_FP/1.799999999999998/0.01/0.08"
+        duration=900,
+        engine_passiveness=0.01,
+        notes="Okx_FP/1.799999999999998/0.01/0.08",
     )
     res = c.place_order(request)
     print("Place Single Order:", res)
@@ -37,7 +38,7 @@ def get_all_orders():
         before="2024-10-15T00:00:00Z",
         after="2024-10-10T00:00:00Z",
         page=1,
-        page_size=10
+        page_size=10,
     )
     res = c.get_all_orders(request)
     print("Get All Orders:", res)
@@ -51,7 +52,7 @@ def submit_order():
         side="buy",
         sell_token_amount=50000.0,
         strategy="TWAP",
-        duration=300
+        duration=300,
     )
     res = c.place_order(request)
     print("Submit Order:", res)
@@ -72,11 +73,7 @@ def cancel_order(order_id):
 # 7. Amend Order
 def amend_order(order_id):
     request = AmendOrderRequest(
-        order_id=order_id,
-        changes={
-            'base_asset_qty': 100,
-            'duration': 3600
-        }
+        order_id=order_id, changes={"base_asset_qty": 100, "duration": 3600}
     )
     try:
         res = c.amend_order(request)
@@ -94,15 +91,17 @@ def place_multi_order():
         child_orders=[
             ChildOrder(
                 pair="ETH:PERP-USDT",
-                side="sell",
-                base_asset_qty=10
+                side="buy",
+                base_asset_qty=10,
+                account="mock",
             ),
             ChildOrder(
                 pair="ETH-USDT",
-                side="buy",
-                base_asset_qty=10
-            )
-        ]
+                side="sell",
+                base_asset_qty=10,
+                account="mock",
+            ),
+        ],
     )
     res = c.place_multi_order(request)
     print("Place Multi Order:", res)
