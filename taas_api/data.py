@@ -1,5 +1,5 @@
 from dataclasses import dataclass, asdict
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 from taas_api.enums import PosSide, Strategy, Side
 import re
 
@@ -205,6 +205,42 @@ class GetOrderRequest:
     after: Optional[str] = None
     page: Optional[int] = None
     page_size: Optional[int] = None
+
+    def to_post_body(self):
+        return {k: v for k, v in asdict(self).items() if v is not None}
+
+
+@dataclass
+class OrderInChain:
+    order_request: PlaceOrderRequest
+    priority: int
+
+    def validate(self):
+        order_success, order_error = self.order_request.validate()
+
+        if not isinstance(self.priority, int) or self.priority <= 0:
+            return False, "priority must be a positive integer"
+
+        if not order_success:
+            return False, order_error
+
+        return True, None
+
+
+@dataclass
+class PlaceChainedOrderRequest:
+    orders_in_chain: List[OrderInChain]
+
+    def validate(self):
+        if len(self.orders_in_chain) < 2:
+            return False, ["At least two orders are required in a chain."]
+
+        for order in self.orders_in_chain:
+            success, error = order.validate()
+            if not success:
+                return False, error
+
+        return True, []
 
     def to_post_body(self):
         return {k: v for k, v in asdict(self).items() if v is not None}

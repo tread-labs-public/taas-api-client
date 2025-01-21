@@ -1,5 +1,11 @@
 from unittest import TestCase
-from taas_api import PlaceOrderRequest, PlaceMultiOrderRequest, ChildOrder
+from taas_api import (
+    PlaceOrderRequest,
+    PlaceMultiOrderRequest,
+    ChildOrder,
+    PlaceChainedOrderRequest,
+    OrderInChain,
+)
 
 
 class PlaceOrderRequestTest(TestCase):
@@ -424,3 +430,204 @@ class ChildOrderTest(TestCase):
 
         self.assertEqual(False, success)
         self.assertTrue("side" in error)
+
+
+class PlaceChainedOrderRequestTest(TestCase):
+    def _build_chained_order_request(self, **kwargs):
+        orders_in_chain = [
+            OrderInChain(
+                order_request=PlaceOrderRequest(
+                    accounts=["mock"],
+                    pair="ETH:PERP-USDT",
+                    side="sell",
+                    duration=300,
+                    strategy="TWAP",
+                    base_asset_qty=10,
+                ),
+                priority=1,
+            ),
+            OrderInChain(
+                order_request=PlaceOrderRequest(
+                    accounts=["mock"],
+                    pair="ETH-USDT",
+                    side="buy",
+                    duration=300,
+                    strategy="TWAP",
+                    base_asset_qty=10,
+                ),
+                priority=2,
+            ),
+        ]
+        params = {
+            "orders_in_chain": orders_in_chain,
+        }
+        params.update(**kwargs)
+        return PlaceChainedOrderRequest(**params)
+
+    def test_validate_success(self):
+        orders_in_chain = [
+            OrderInChain(
+                order_request=PlaceOrderRequest(
+                    accounts=["mock"],
+                    pair="ETH:PERP-USDT",
+                    side="sell",
+                    duration=300,
+                    strategy="TWAP",
+                    base_asset_qty=10,
+                ),
+                priority=1,
+            ),
+            OrderInChain(
+                order_request=PlaceOrderRequest(
+                    accounts=["mock"],
+                    pair="ETH-USDT",
+                    side="buy",
+                    duration=300,
+                    strategy="TWAP",
+                    base_asset_qty=10,
+                ),
+                priority=2,
+            ),
+        ]
+        chained_order = self._build_chained_order_request(
+            orders_in_chain=orders_in_chain
+        )
+        success, errors = chained_order.validate()
+
+        self.assertEqual(True, success)
+        self.assertEqual([], errors)
+
+    def test_validate_success_all_fields(self):
+        orders_in_chain = [
+            OrderInChain(
+                order_request=PlaceOrderRequest(
+                    accounts=["mock"],
+                    pair="ETH:PERP-USDT",
+                    side="sell",
+                    duration=300,
+                    strategy="TWAP",
+                    base_asset_qty=10,
+                ),
+                priority=1,
+            ),
+            OrderInChain(
+                order_request=PlaceOrderRequest(
+                    accounts=["mock"],
+                    pair="ETH-USDT",
+                    side="buy",
+                    duration=300,
+                    strategy="TWAP",
+                    base_asset_qty=10,
+                ),
+                priority=2,
+            ),
+        ]
+        chained_order = self._build_chained_order_request(
+            orders_in_chain=orders_in_chain,
+        )
+        success, errors = chained_order.validate()
+
+        self.assertEqual(True, success)
+        self.assertEqual([], errors)
+
+    def test_validate_fail_no_orders(self):
+        chained_order = self._build_chained_order_request(orders_in_chain=[])
+        success, errors = chained_order.validate()
+
+        self.assertEqual(False, success)
+        self.assertTrue("At least two orders are required in a chain." in errors[0])
+
+    def test_to_post_body(self):
+        orders_in_chain = [
+            OrderInChain(
+                order_request=PlaceOrderRequest(
+                    accounts=["mock"],
+                    pair="ETH:PERP-USDT",
+                    side="sell",
+                    duration=300,
+                    strategy="TWAP",
+                    base_asset_qty=10,
+                ),
+                priority=1,
+            ),
+            OrderInChain(
+                order_request=PlaceOrderRequest(
+                    accounts=["mock"],
+                    pair="ETH-USDT",
+                    side="buy",
+                    duration=300,
+                    strategy="TWAP",
+                    base_asset_qty=10,
+                ),
+                priority=2,
+            ),
+        ]
+        chained_order = self._build_chained_order_request(
+            orders_in_chain=orders_in_chain
+        )
+        body = chained_order.to_post_body()
+
+        self.assertEqual(len(body["orders_in_chain"]), 2)
+        self.assertEqual(
+            body["orders_in_chain"][0]["order_request"]["pair"], "ETH:PERP-USDT"
+        )
+        self.assertEqual(body["orders_in_chain"][0]["order_request"]["side"], "sell")
+        self.assertEqual(body["orders_in_chain"][0]["order_request"]["duration"], 300)
+        self.assertEqual(body["orders_in_chain"][0]["priority"], 1)
+        self.assertEqual(
+            body["orders_in_chain"][1]["order_request"]["pair"], "ETH-USDT"
+        )
+        self.assertEqual(body["orders_in_chain"][1]["order_request"]["side"], "buy")
+        self.assertEqual(body["orders_in_chain"][1]["priority"], 2)
+
+
+class OrderInChainTest(TestCase):
+    def test_validate_success(self):
+        order = OrderInChain(
+            order_request=PlaceOrderRequest(
+                accounts=["mock"],
+                pair="ETH-USDT",
+                side="sell",
+                duration=300,
+                strategy="TWAP",
+                base_asset_qty=10,
+            ),
+            priority=1,
+        )
+        success, error = order.validate()
+
+        self.assertEqual(True, success)
+        self.assertTrue(error is None)
+
+    def test_validate_fail_bad_priority(self):
+        order = OrderInChain(
+            order_request=PlaceOrderRequest(
+                accounts=["mock"],
+                pair="ETH-USDT",
+                side="barter",
+                duration=300,
+                strategy="TWAP",
+                base_asset_qty=10,
+            ),
+            priority=-1,
+        )
+        success, error = order.validate()
+
+        self.assertEqual(False, success)
+        self.assertTrue("priority must be a positive integer" in error)
+
+        order = OrderInChain(
+            order_request=PlaceOrderRequest(
+                accounts=["mock"],
+                pair="ETH-USDT",
+                side="barter",
+                duration=300,
+                strategy="TWAP",
+                base_asset_qty=10,
+            ),
+            priority=-1,
+        )
+        success, error = order.validate()
+
+        self.assertEqual(False, success)
+        self.assertTrue("priority must be a positive integer" in error)

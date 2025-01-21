@@ -7,6 +7,7 @@ from taas_api import data
 
 logger = logging.getLogger(__name__)
 
+
 class BaseClient:
     def __init__(self, url: str, auth_token: str = None):
         # TAAS URL is used for development, TAAS_IP is used for real in pipeline
@@ -25,7 +26,9 @@ class BaseClient:
         logger.info(f"GET {path}")
         return self._handle_response(
             requests.get(
-                urljoin(self.taas_url, path), headers=self._common_headers(), params=params
+                urljoin(self.taas_url, path),
+                headers=self._common_headers(),
+                params=params,
             )
         )
 
@@ -51,6 +54,7 @@ class BaseClient:
             "Authorization": f"Token {self.auth_token}",
         }
 
+
 class Client(BaseClient):
     def get_order(self, order_id: str):
         return self.get(path=f"/api/order/{order_id}")
@@ -69,7 +73,9 @@ class Client(BaseClient):
 
     def place_multi_order(self, request: data.PlaceMultiOrderRequest):
         if not isinstance(request, data.PlaceMultiOrderRequest):
-            raise ValueError(f"Expecting request to be of type {data.PlaceMultiOrderRequest}")
+            raise ValueError(
+                f"Expecting request to be of type {data.PlaceMultiOrderRequest}"
+            )
 
         validate_success, errors = request.validate()
 
@@ -82,7 +88,9 @@ class Client(BaseClient):
 
     def place_order(self, request: data.PlaceOrderRequest):
         if not isinstance(request, data.PlaceOrderRequest):
-            raise ValueError(f"Expecting request to be of type {data.PlaceOrderRequest}")
+            raise ValueError(
+                f"Expecting request to be of type {data.PlaceOrderRequest}"
+            )
 
         validate_success, error = request.validate()
 
@@ -94,7 +102,12 @@ class Client(BaseClient):
     def cancel_order(self, order_id: str):
         return self.delete(path=f"/api/order/{order_id}")
 
-    def close_balances(self, max_notional: float, account_names: List[str] = None, preferred_strategy: str = None):
+    def close_balances(
+        self,
+        max_notional: float,
+        account_names: List[str] = None,
+        preferred_strategy: str = None,
+    ):
         data = {
             "max_notional": max_notional,
         }
@@ -109,12 +122,28 @@ class Client(BaseClient):
 
     def get_order_messages(self, request: data.GetOrderMessagesRequest):
         if not isinstance(request, data.GetOrderMessagesRequest):
-            raise ValueError(f"Expecting request to be of type {data.GetOrderMessagesRequest}")
+            raise ValueError(
+                f"Expecting request to be of type {data.GetOrderMessagesRequest}"
+            )
 
         return self.post(path="/api/order_messages/", data=request.to_post_body())
 
     def amend_order(self, request: data.AmendOrderRequest):
         if not isinstance(request, data.AmendOrderRequest):
-            raise ValueError(f"Expecting request to be of type {data.AmendOrderRequest}")
+            raise ValueError(
+                f"Expecting request to be of type {data.AmendOrderRequest}"
+            )
 
         return self.post(path="/api/amend_order/", data=request.to_post_body())
+
+    def place_chained_order(self, request: data.PlaceChainedOrderRequest):
+        if not isinstance(request, data.PlaceChainedOrderRequest):
+            raise ValueError(
+                f"Expecting request to be of type {data.PlaceChainedOrderRequest}"
+            )
+
+        validate_success, errors = request.validate()
+
+        if not validate_success:
+            raise ValueError(str(errors))
+        return self.post(path="/api/chained_orders/", data=request.to_post_body())
