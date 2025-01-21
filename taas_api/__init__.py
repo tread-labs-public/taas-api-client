@@ -6,5 +6,4 @@ from taas_api.data import (
     ChildOrder,
     PlaceChainedOrderRequest,
     OrderInChain,
-    RebalanceRequest,
 )

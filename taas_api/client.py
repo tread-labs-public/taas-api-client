@@ -147,15 +147,3 @@ class Client(BaseClient):
         if not validate_success:
             raise ValueError(str(errors))
         return self.post(path="/api/chained_orders/", data=request.to_post_body())
-
-    def place_rebalance(self, request: data.RebalanceRequest):
-        if not isinstance(request, data.RebalanceRequest):
-            raise ValueError(f"Expecting request to be of type {data.RebalanceRequest}")
-
-        validate_success, errors = request.validate()
-
-        if not validate_success:
-            raise ValueError(str(errors))
-        return self.post(
-            path="/internal/account/start_rebalance", data=request.to_post_body()
-        )
