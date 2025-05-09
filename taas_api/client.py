@@ -62,8 +62,16 @@ class Client(BaseClient):
     def get_order_summary(self, order_id: str):
         return self.get(path=f"/api/order_summary/{order_id}")
 
-    def get_balances(self):
-        return self.get(path=f"/api/balances/")
+    def get_balances(
+        self, exchange_names: List[str] = None, account_names: List[str] = None
+    ):
+        params = {}
+        if exchange_names:
+            params["exchange_names"] = ",".join(exchange_names)
+        if account_names:
+            params["account_names"] = ",".join(account_names)
+
+        return self.get(path=f"/api/balances/", params=params)
 
     def get_all_orders(self, request: data.GetOrderRequest):
         if not isinstance(request, data.GetOrderRequest):

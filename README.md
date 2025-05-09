@@ -101,17 +101,18 @@ res = c.place_order(req)
 from taas_api import ChildOrder, PlaceMultiOrderRequest
 
 request = PlaceMultiOrderRequest(
-    accounts=["mock"],
     duration=200,
     strategy="TWAP",
     exposure_tolerance=0.1,
     child_orders=[
         ChildOrder(
+            account="mock",
             pair="ETH:PERP-USDT",
             side="sell",
             base_asset_qty="10"
         ),
         ChildOrder(
+            account="test_bybit",
             pair="ETH-USDT",
             side="buy",
             base_asset_qty="10"
