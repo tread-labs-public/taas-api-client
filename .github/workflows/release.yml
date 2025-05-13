@@ -17,14 +17,13 @@ jobs:
           python -m pip install --upgrade build
           pip install -r requirements.txt
           pip install -r test-requirements.txt
-          python -m pip install --upgrade twine
+          python -m pip install --upgrade twine==6.0.1
       - name: Run unit tests
         run: |
           python -m unittest
       - name: Run build
         run: |
           python -m build
-  
       - name: Upload build to PyPI
         env:
           PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
