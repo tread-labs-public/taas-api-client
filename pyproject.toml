@@ -8,6 +8,7 @@ version = "1.2.7"
 authors = [
   { name="Tread Labs", email="ops@tread.fi" },
 ]
+license-files = ["LICENSE"]
 description = "API client to interact with the TAAS web API"
 readme = "README.md"
 requires-python = ">=3.7"
@@ -15,6 +16,9 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
+]
+dependencies = [
+    "requests>=2.25.1",
 ]
 
 [project.urls]
