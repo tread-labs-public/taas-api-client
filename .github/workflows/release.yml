@@ -18,13 +18,14 @@ jobs:
           pip install -r requirements.txt
           pip install -r test-requirements.txt
           python -m pip install --upgrade twine
+          rm -rf dist/ build/ *.egg-info/
       - name: Run unit tests
         run: |
           python -m unittest
       - name: Run build
         run: |
           python -m build
-  
+
       - name: Upload build to PyPI
         env:
           PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
