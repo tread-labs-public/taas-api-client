@@ -2,6 +2,7 @@ from typing import List
 import requests
 import logging
 from urllib.parse import urljoin
+import time
 
 from taas_api import data
 
@@ -15,37 +16,53 @@ class BaseClient:
         self.auth_token = auth_token
 
     def post(self, path: str, data: dict):
-        logger.info(f"POST {path}")
-        return self._handle_response(
-            requests.post(
+        start_time = time.perf_counter()
+        response = None
+        try:
+            response = requests.post(
                 urljoin(self.taas_url, path), headers=self._common_headers(), json=data
             )
-        )
+            return self._handle_response(response)
+        finally:
+            elapsed_ms = (time.perf_counter() - start_time) * 1000.0
+            status_code = response.status_code if response is not None else "N/A"
+            logger.info(f"POST {path} latency={elapsed_ms:.1f}ms status={status_code}")
 
     def get(self, path: str, params: dict = {}):
-        logger.info(f"GET {path}")
-        return self._handle_response(
-            requests.get(
+        start_time = time.perf_counter()
+        response = None
+        try:
+            response = requests.get(
                 urljoin(self.taas_url, path),
                 headers=self._common_headers(),
                 params=params,
             )
-        )
+            return self._handle_response(response)
+        finally:
+            elapsed_ms = (time.perf_counter() - start_time) * 1000.0
+            status_code = response.status_code if response is not None else "N/A"
+            logger.info(f"GET {path} latency={elapsed_ms:.1f}ms status={status_code}")
 
     def delete(self, path: str):
-        logger.info(f"DELETE {path}")
-        return self._handle_response(
-            requests.delete(
+        start_time = time.perf_counter()
+        response = None
+        try:
+            response = requests.delete(
                 urljoin(self.taas_url, path), headers=self._common_headers()
             )
-        )
+            return self._handle_response(response)
+        finally:
+            elapsed_ms = (time.perf_counter() - start_time) * 1000.0
+            status_code = response.status_code if response is not None else "N/A"
+            logger.info(
+                f"DELETE {path} latency={elapsed_ms:.1f}ms status={status_code}"
+            )
 
     def _handle_response(self, response):
         try:
             response.raise_for_status()
         except requests.exceptions.HTTPError:
             logger.warning(response.content)
-            raise
 
         return response.json()
 
