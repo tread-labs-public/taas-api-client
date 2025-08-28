@@ -133,6 +133,7 @@ class PlaceMultiOrderRequest:
     order_condition_expiry: str = None
     strategy_params: dict = None
     exposure_tolerance: float = None
+    custom_order_id: str = None
 
     def validate(self):
         if len(self.child_orders) == 0:

@@ -17,7 +17,7 @@ Make sure the URL specified is the full path to the TaaS instance (including "ht
 ```
 from taas_api import Client, PlaceOrderRequest
 
-c = Client(url="http://localhost:8000", auth_token="b72ab3bcbce4423208a07f52b5aed207d5bd053e")
+c = Client(url="http://localhost:8000", auth_token="ecef233dfd944103e1ca86a1516dc2fb43df4d2a")
 ```
 
 ### Placing Orders
@@ -101,18 +101,18 @@ res = c.place_order(req)
 from taas_api import ChildOrder, PlaceMultiOrderRequest
 
 request = PlaceMultiOrderRequest(
+    accounts=["test_okx"],
     duration=200,
     strategy="TWAP",
     exposure_tolerance=0.1,
+    custom_order_id="asdf",
     child_orders=[
         ChildOrder(
-            account="mock",
             pair="ETH:PERP-USDT",
             side="sell",
             base_asset_qty="10"
         ),
         ChildOrder(
-            account="test_bybit",
             pair="ETH-USDT",
             side="buy",
             base_asset_qty="10"
