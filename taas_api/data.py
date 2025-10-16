@@ -244,3 +244,24 @@ class PlaceChainedOrderRequest:
 
     def to_post_body(self):
         return {k: v for k, v in asdict(self).items() if v is not None}
+
+@dataclass
+class SetLeverageRequest:
+    account_ids: List[str]
+    pair: str
+    leverage: str
+
+    def validate(self):
+        result = re.search(INTERNAL_PAIR_RE_PATTERN, self.pair)
+
+        if result is None:
+            return (
+                False,
+                "pair must correct syntax: {BASE}-{QUOTE} or {BASE}:{VARIANT}-{QUOTE} ex. ETH-USDT or ETH:PERP-USDT",
+            )
+        if not self.account_ids:
+            return False, "account_ids must be provided"
+        if not self.leverage:
+            return False, "leverage must be provided"
+
+        return True, None
