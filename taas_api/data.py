@@ -245,6 +245,7 @@ class PlaceChainedOrderRequest:
     def to_post_body(self):
         return {k: v for k, v in asdict(self).items() if v is not None}
 
+
 @dataclass
 class SetLeverageRequest:
     account_ids: List[str]
@@ -265,3 +266,6 @@ class SetLeverageRequest:
             return False, "leverage must be provided"
 
         return True, None
+
+    def to_post_body(self):
+        return {k: v for k, v in asdict(self).items() if v is not None}

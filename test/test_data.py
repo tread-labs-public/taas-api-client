@@ -5,6 +5,7 @@ from taas_api import (
     ChildOrder,
     PlaceChainedOrderRequest,
     OrderInChain,
+    SetLeverageRequest,
 )
 
 
@@ -631,3 +632,36 @@ class OrderInChainTest(TestCase):
 
         self.assertEqual(False, success)
         self.assertTrue("priority must be a positive integer" in error)
+
+
+class SetLeverageRequestTest(TestCase):
+    def test_validate_success(self):
+        request = SetLeverageRequest(
+            account_ids=["mock"],
+            pair="ETH-USDT",
+            leverage="10",
+        )
+        success, error = request.validate()
+        self.assertEqual(True, success)
+        self.assertTrue(error is None)
+
+    def test_validate_fail_bad_pair(self):
+        request = SetLeverageRequest(
+            account_ids=["mock"],
+            pair="ETHUSDT",
+            leverage="10",
+        )
+        success, error = request.validate()
+        self.assertEqual(False, success)
+        self.assertTrue("pair" in error)
+        
+    def test_to_post_body(self):
+        request = SetLeverageRequest(
+            account_ids=["mock"],
+            pair="BTC:PERP-USDC",
+            leverage="10",
+        )
+        body = request.to_post_body()
+        self.assertEqual(body["account_ids"], ["mock"])
+        self.assertEqual(body["pair"], "BTC:PERP-USDC")
+        self.assertEqual(body["leverage"], "10")
