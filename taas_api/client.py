@@ -77,7 +77,7 @@ class Client(BaseClient):
         if not isinstance(request, data.GetOrderRequest):
             raise ValueError(f"Expecting request to be of type {data.GetOrderRequest}")
 
-        return self.get(path="/api/orders/", params=request.to_post_body())
+        return self.get(path="/api/orders/", params=request.to_query_params())
 
     def place_multi_order(self, request: data.PlaceMultiOrderRequest):
         if not isinstance(request, data.PlaceMultiOrderRequest):

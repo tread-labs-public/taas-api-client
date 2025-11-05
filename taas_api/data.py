@@ -200,7 +200,8 @@ class AmendOrderRequest:
 
 @dataclass
 class GetOrderRequest:
-    status: Optional[str] = None
+    statuses: Optional[List[str]] = None
+    account_names: Optional[List[str]] = None
     before: Optional[str] = None
     after: Optional[str] = None
     page: Optional[int] = None
