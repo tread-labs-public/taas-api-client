@@ -11,8 +11,8 @@ class PlaceOrderRequest:
     accounts: List[str]
     pair: str
     side: str
-    duration: int
     strategy: str
+    duration: int = None
     sell_token_amount: float = None
     base_asset_qty: float = None
     quote_asset_qty: float = None
@@ -81,6 +81,9 @@ class PlaceOrderRequest:
         if self.strategy_params is not None:
             if not isinstance(self.strategy_params, dict):
                 return False, "strategy_params must be a dict"
+
+        if self.duration is None and self.pov_target is None:
+            return False, "duration or pov_target must be provided"
 
         return True, None
 

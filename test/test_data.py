@@ -176,6 +176,26 @@ class PlaceOrderRequestTest(TestCase):
         self.assertEqual(3.2, post_body["pov_limit"])
         self.assertEqual(2.1, post_body["pov_target"])
 
+    def test_validate_success_without_duration(self):
+        order_request = self._build_order_request(duration=None, pov_target=0.01)
+        success, error = order_request.validate()
+
+        self.assertTrue(success, error)
+        self.assertIsNone(error)
+
+    def test_to_post_body_without_duration(self):
+        order_request = self._build_order_request(duration=None, pov_target=0.01)
+        post_body = order_request.to_post_body()
+
+        self.assertFalse("duration" in post_body)
+
+    def test_validate_fail_without_duration_and_pov_target(self):
+        order_request = self._build_order_request(duration=None, pov_target=None)
+        success, error = order_request.validate()
+
+        self.assertFalse(success, error)
+        self.assertTrue("duration or pov_target must be provided" in error)
+
 
 class PlaceMultiOrderRequestTest(TestCase):
     def _build_multi_order_request(self, **kwargs):
