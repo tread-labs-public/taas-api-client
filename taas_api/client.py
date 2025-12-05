@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict, Optional
 import requests
 import logging
 from urllib.parse import urljoin
@@ -10,10 +10,16 @@ logger = logging.getLogger(__name__)
 
 
 class BaseClient:
-    def __init__(self, url: str, auth_token: str = None):
+    def __init__(
+        self,
+        url: str,
+        auth_token: str = None,
+        extra_headers: Optional[Dict[str, str]] = None,
+    ):
         # TAAS URL is used for development, TAAS_IP is used for real in pipeline
         self.taas_url = url
         self.auth_token = auth_token
+        self._extra_headers = dict(extra_headers) if extra_headers else {}
 
     def post(self, path: str, data: dict):
         start_time = time.perf_counter()
@@ -67,9 +73,12 @@ class BaseClient:
         return response.json()
 
     def _common_headers(self):
-        return {
+        headers = {
             "Authorization": f"Token {self.auth_token}",
         }
+        if self._extra_headers:
+            headers.update(self._extra_headers)
+        return headers
 
 
 class Client(BaseClient):
