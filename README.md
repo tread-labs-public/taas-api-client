@@ -169,9 +169,9 @@ Measured examples:
 
 After the deadline the engine does not stop. It keeps taking half the band room every 5 seconds. After the deadline the schedule's lower bound sits just under the full size. Takes stop once the leg is within one band of that bound, and makes fill the rest.
 
-To get mostly maker fills, use a wide band or a long duration.
+To get only maker fills, set `passive_only` on the legs. The engine then never crosses the spread, and the band only caps how far one leg can lead. To get mostly maker fills, use a wide band or a long duration.
 
-When you submit, the response can include a warning about the band. Its `warnings[].params` include `max_take_share`, the share of the order takes can cover, and `take_size_notional`, the size of each take.
+When you submit, the response can include a warning about the band. Its message names the three ways to fix it: raise `exposure_tolerance`, extend `duration`, or set `passive_only`. Its `warnings[].params` include `max_take_share`, the share of the order takes can cover, and `take_size_notional`, the size of each take. Orders with `passive_only` on every leg get no pace warning.
 
 ### Get Order Details
 Retrieves the details of a specific order using the order ID.
