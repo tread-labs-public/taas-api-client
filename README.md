@@ -39,7 +39,7 @@ Submits a new order with specified parameters such as accounts, trading pair, si
 | alpha_tilt          | The alpha tilt parameter of the order, within the range [-1, 1], 0 is default.                                     |
 | pov_target          | The pov target parameter of the order, within the range (0, 1], default is None. Limited to non-multi orders.      |
 | pov_limit           | The pov limit parameter of the order, within the range (0, 1], default is None. Limited to non-multi orders.       |
-| exposure_tolerance  | The exposure tolerance parameter of the order, within the range [0.1, 1], 0.5 is default. Limited to multi orders. |
+| exposure_tolerance  | The exposure tolerance parameter of the order, within the range [0.0001, 1] (0.01% to 100%), 0.1 is default. Limited to multi orders. |
 | limit_price         | The limit price that limits all the placements in the order, if applicable.                                        |
 | strategy_params     | Additional parameters specific to the chosen trading strategy, provided as a dictionary.                           |
 | notes               | Any additional notes or comments related to the order.                                                             |
@@ -146,6 +146,32 @@ res = c.place_multi_order(request)
     'failure_reason':''
 }
 ```
+
+#### Exposure tolerance and duration
+
+The exposure tolerance is a hard limit on how far one leg can lead the other. It always wins over duration.
+
+When a leg of a plain two-leg spread falls behind, the engine takes half the band room every 5 seconds. It leaves the other half to makes. A narrower band means smaller and more frequent takes, not fewer. If half the band room is smaller than one venue minimum order size, no take fires and the makes keep the whole room.
+
+Takes alone can cover only part of the order by the deadline:
+
+share ≈ tolerance × duration ÷ 10 s, capped at 100%
+
+Delta-neutral, market-maker and three-or-more-leg orders take the whole band room per 5-second loop instead, so for them the divisor is 5 s.
+
+Measured examples:
+
+| Tolerance  | Duration | Share takes alone can reach by the deadline |
+|------------|----------|---------------------------------------------|
+| 0.4%       | 15 min   | 36%                                         |
+| 1%         | 15 min   | 90%                                         |
+| 2% or more | 15 min   | 100%                                        |
+
+After the deadline the engine does not stop. It keeps taking half the band room every 5 seconds. After the deadline the schedule's lower bound sits just under the full size. Takes stop once the leg is within one band of that bound, and makes fill the rest.
+
+To get only maker fills, set `passive_only` on the legs. The engine then never crosses the spread, and the band only caps how far one leg can lead. To get mostly maker fills, use a wide band or a long duration.
+
+When you submit, the response can include a warning about the band. Its message names the three ways to fix it: raise `exposure_tolerance`, extend `duration`, or set `passive_only`. Its `warnings[].params` include `max_take_share`, the share of the order takes can cover, and `take_size_notional`, the size of each take. Orders with `passive_only` on every leg get no pace warning.
 
 ### Get Order Details
 Retrieves the details of a specific order using the order ID.

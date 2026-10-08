@@ -331,6 +331,24 @@ class PlaceMultiOrderRequestTest(TestCase):
         self.assertEqual(False, success)
         self.assertTrue("alpha_tilt" in errors[0])
 
+    def test_validate_exposure_tolerance_range(self):
+        child_orders = [
+            ChildOrder(
+                pair="ETH:PERP-USDT",
+                side="sell",
+                base_asset_qty="10",
+            ),
+        ]
+        for tolerance, expected in ((0.004, True), (0.00005, False), (1.5, False)):
+            with self.subTest(tolerance=tolerance):
+                multi_order = self._build_multi_order_request(
+                    exposure_tolerance=tolerance, child_orders=child_orders
+                )
+                success, errors = multi_order.validate()
+                self.assertEqual(expected, success)
+                if not expected:
+                    self.assertTrue("exposure_tolerance" in errors[0])
+
     def test_validate_allow_bad_strategy_params(self):
         child_orders = [
             ChildOrder(
