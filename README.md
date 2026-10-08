@@ -151,11 +151,13 @@ res = c.place_multi_order(request)
 
 The exposure tolerance is a hard limit on how far one leg can lead the other. It always wins over duration.
 
-When a leg falls behind, the engine takes half the band room every 5 seconds. It leaves the other half to makes. A narrower band means smaller and more frequent takes, not fewer. If half the band room is smaller than one venue minimum order size, no take fires and the makes keep the whole room.
+When a leg of a plain two-leg spread falls behind, the engine takes half the band room every 5 seconds. It leaves the other half to makes. A narrower band means smaller and more frequent takes, not fewer. If half the band room is smaller than one venue minimum order size, no take fires and the makes keep the whole room.
 
 Takes alone can cover only part of the order by the deadline:
 
 share ≈ tolerance × duration ÷ 10 s, capped at 100%
+
+Delta-neutral, market-maker and three-or-more-leg orders take the whole band room per 5-second loop instead, so for them the divisor is 5 s.
 
 Measured examples:
 
