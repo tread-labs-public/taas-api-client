@@ -165,7 +165,7 @@ Measured examples:
 | 1%         | 15 min   | 90%                                         |
 | 2% or more | 15 min   | 100%                                        |
 
-After the deadline the engine does not stop. It keeps taking half the band room every 5 seconds. Takes stop once the leg is within one band of the schedule's lower bound. After the deadline that bound sits just under the full size, at 98%. So takes stop when the leg is within one band of 98% of the target, and makes fill the rest.
+After the deadline the engine does not stop. It keeps taking half the band room every 5 seconds. After the deadline the schedule's lower bound sits just under the full size. Takes stop once the leg is within one band of that bound, and makes fill the rest.
 
 To get mostly maker fills, use a wide band or a long duration.
 
