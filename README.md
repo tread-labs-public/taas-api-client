@@ -151,7 +151,7 @@ res = c.place_multi_order(request)
 
 The exposure tolerance is a hard limit on how far one leg can lead the other. It always wins over duration.
 
-When a leg falls behind, the engine takes half the band room every 5 seconds. It leaves the other half to makes. A narrower band means smaller and more frequent takes, not fewer.
+When a leg falls behind, the engine takes half the band room every 5 seconds. It leaves the other half to makes. A narrower band means smaller and more frequent takes, not fewer. If half the band room is smaller than one venue minimum order size, no take fires and the makes keep the whole room.
 
 Takes alone can cover only part of the order by the deadline:
 
@@ -165,7 +165,7 @@ Measured examples:
 | 1%         | 15 min   | 90%                                         |
 | 2% or more | 15 min   | 100%                                        |
 
-After the deadline the engine does not stop. It keeps taking half the band room every 5 seconds until the leg is within one band of done.
+After the deadline the engine does not stop. It keeps taking half the band room every 5 seconds. Takes stop once the leg is within one band of the schedule's lower bound. After the deadline that bound sits just under the full size, at 98%. So takes stop when the leg is within one band of 98% of the target, and makes fill the rest.
 
 To get mostly maker fills, use a wide band or a long duration.
 
