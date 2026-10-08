@@ -39,7 +39,7 @@ Submits a new order with specified parameters such as accounts, trading pair, si
 | alpha_tilt          | The alpha tilt parameter of the order, within the range [-1, 1], 0 is default.                                     |
 | pov_target          | The pov target parameter of the order, within the range (0, 1], default is None. Limited to non-multi orders.      |
 | pov_limit           | The pov limit parameter of the order, within the range (0, 1], default is None. Limited to non-multi orders.       |
-| exposure_tolerance  | The exposure tolerance parameter of the order, within the range [0.0001, 1] (0.01% to 100%), 0.1 is default. Limited to multi orders. This client currently rejects values below 0.02. |
+| exposure_tolerance  | The exposure tolerance parameter of the order, within the range [0.0001, 1] (0.01% to 100%), 0.1 is default. Limited to multi orders. |
 | limit_price         | The limit price that limits all the placements in the order, if applicable.                                        |
 | strategy_params     | Additional parameters specific to the chosen trading strategy, provided as a dictionary.                           |
 | notes               | Any additional notes or comments related to the order.                                                             |

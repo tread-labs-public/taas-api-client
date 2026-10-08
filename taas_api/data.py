@@ -167,8 +167,8 @@ class PlaceMultiOrderRequest:
                 return False, ["alpha_tilt out of range, must be [-1,1]"]
 
         if self.exposure_tolerance is not None:
-            if not (0.02 <= self.exposure_tolerance <= 1):
-                return False, ["exposure_tolerance out of range, must be [0.02,1]"]
+            if not (0.0001 <= self.exposure_tolerance <= 1):
+                return False, ["exposure_tolerance out of range, must be [0.0001,1]"]
 
         if self.strategy_params is not None:
             if not isinstance(self.strategy_params, dict):
