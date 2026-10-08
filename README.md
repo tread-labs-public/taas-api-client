@@ -39,7 +39,7 @@ Submits a new order with specified parameters such as accounts, trading pair, si
 | alpha_tilt          | The alpha tilt parameter of the order, within the range [-1, 1], 0 is default.                                     |
 | pov_target          | The pov target parameter of the order, within the range (0, 1], default is None. Limited to non-multi orders.      |
 | pov_limit           | The pov limit parameter of the order, within the range (0, 1], default is None. Limited to non-multi orders.       |
-| exposure_tolerance  | The exposure tolerance parameter of the order, within the range [0.1, 1], 0.5 is default. Limited to multi orders. |
+| exposure_tolerance  | The exposure tolerance parameter of the order, within the range [0.0001, 1] (0.01% to 100%), 0.1 is default. Limited to multi orders. This client currently rejects values below 0.02. |
 | limit_price         | The limit price that limits all the placements in the order, if applicable.                                        |
 | strategy_params     | Additional parameters specific to the chosen trading strategy, provided as a dictionary.                           |
 | notes               | Any additional notes or comments related to the order.                                                             |
@@ -146,6 +146,30 @@ res = c.place_multi_order(request)
     'failure_reason':''
 }
 ```
+
+#### Exposure tolerance and duration
+
+The exposure tolerance is a hard limit on how far one leg can lead the other. It always wins over duration.
+
+When a leg falls behind, the engine takes half the band room every 5 seconds. It leaves the other half to makes. A narrower band means smaller and more frequent takes, not fewer.
+
+Takes alone can cover only part of the order by the deadline:
+
+share ≈ tolerance × duration ÷ 10 s, capped at 100%
+
+Measured examples:
+
+| Tolerance  | Duration | Share takes alone can reach by the deadline |
+|------------|----------|---------------------------------------------|
+| 0.4%       | 15 min   | 36%                                         |
+| 1%         | 15 min   | 90%                                         |
+| 2% or more | 15 min   | 100%                                        |
+
+After the deadline the engine does not stop. It keeps taking half the band room every 5 seconds until the leg is within one band of done.
+
+To get mostly maker fills, use a wide band or a long duration.
+
+When you submit, the response can include a warning about the band. Its `warnings[].params` include `max_take_share`, the share of the order takes can cover, and `take_size_notional`, the size of each take.
 
 ### Get Order Details
 Retrieves the details of a specific order using the order ID.
